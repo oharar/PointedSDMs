@@ -1,0 +1,17 @@
+Package: PointedSDMs
+Type: Package
+Title: Fit Models derived from Point Processes to Species Distributions using
+    INLA
+Version: 0.1
+Date: 2016-08-01
+Author: Bob O'Hara
+Maintainer: Bob O'Hara <bohara@senckenberg.de>
+Description: A package to fit models based on point processes to a variety of data types.
+Depends:
+    INLA,
+    sp,
+Imports: deldir, geosphere, Matrix, parallel, raster, rgeos, splancs
+License: GPL-3
+LazyData: TRUE
+RoxygenNote: 5.0.1
+Comemnt: foreign,ggplot2,gpclib,gridExtra,lattice,maptools,maps,MASS,spatstat,
