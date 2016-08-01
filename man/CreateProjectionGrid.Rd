@@ -4,7 +4,8 @@
 \alias{CreateProjectionGrid}
 \title{Function to create stack for predictions}
 \usage{
-CreateProjectionGrid(nxy, mesh, data, tag = "pred", boundary = NULL)
+CreateProjectionGrid(nxy, mesh, data, tag = "pred", coordnames = c("x",
+  "y"), boundary = NULL)
 }
 \arguments{
 \item{nxy}{Number of points in x and y directions.}
@@ -14,6 +15,8 @@ CreateProjectionGrid(nxy, mesh, data, tag = "pred", boundary = NULL)
 \item{data}{Data frame with columns for coordinates, and others are covariates.}
 
 \item{tag}{Name for tag for the stack (defaults to "points").}
+
+\item{coordnames}{Names of coorinates (defaults to x and y)}
 
 \item{boundary}{Boundary of region to project onto. Defaults to NULL, when the boundary of the mesh will be used}
 }

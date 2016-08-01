@@ -4,12 +4,13 @@
 \alias{MakeSpatialRegion}
 \title{Function to set up spatial structure for region}
 \usage{
-MakeSpatialRegion(data, coords = c("X", "Y"), meshpars, bdry = NULL)
+MakeSpatialRegion(data = NULL, coords = c("X", "Y"), meshpars,
+  bdry = NULL)
 }
 \arguments{
-\item{data}{Data (as data frame, with points having locations X and Y).}
+\item{data}{Data (as data frame, with points having locations, or as a SpatialPointsDataFrame). Can be NULL, if bdry is not NULL.}
 
-\item{coords}{Names of columns for coordinates (X & Y) in data.}
+\item{coords}{Names of columns for coordinates (X & Y) in data. Ignored if data is NULL.}
 
 \item{meshpars}{List of parameters to be sent to inla.mesh.2d().}
 

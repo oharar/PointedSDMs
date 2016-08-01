@@ -9,7 +9,7 @@ GetNearestCovariate(points, covs)
 \arguments{
 \item{points}{Points for which we need covariates.}
 
-\item{covs}{Covariates, with coordinates in first and second columns.}
+\item{covs}{Covariates, with coordinates in first and second columns, or a SpatialPointsDataFrame object}
 }
 \value{
 A matrix with the original points plus two columns with coorinates of nearest point.

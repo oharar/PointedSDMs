@@ -10,13 +10,13 @@ GetIntegrationStack(mesh, data, area, tag = "mesh", coordnames = c("X",
 \arguments{
 \item{mesh}{INLA mesh.}
 
-\item{data}{Data frame with columns X and Y, and others covariates.}
+\item{data}{Data frame with columns X and Y, and others covariates, or a SpatialPointsDataFrame object.}
 
 \item{area}{Area around each integration point.}
 
 \item{tag}{Tag to name stack.}
 
-\item{coordnames}{Names for coordinates in data.}
+\item{coordnames}{Names for coordinates in data (if data is nota spatial object).}
 
 \item{InclCoords}{Boolean, should coordinates be included in data (defaults to FALSE).}
 }
