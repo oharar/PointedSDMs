@@ -4,7 +4,7 @@
 #' @param polys List of polygons (a spatialpolygonsdataframe will work).
 #' @param mesh A mesh.
 #' @param scale Scale argument to be passed to AddDistToDataFrame.
-#' @param ... Additional variables to pass to GetPointsStack(), e.g. tag.
+#' @param ... Additional variables to pass to MakePointsStack(), e.g. tag.
 #'
 #' @return An INLA stack with distances to polygons added
 #'
@@ -25,7 +25,7 @@ AddPolyToPointsStack <- function(stk, polys, mesh,scale=FALSE,...) {
   names(dists) <- gsub('[_-]', "", names(dists))
   Covs <- cbind(Covs, dists)
 
-  stk=GetPointsStack(presences=Covs[,c("long","lat")], coordnames=c("long","lat"), data=Covs, mesh=mesh,...)
-  #    stk=GetPointsStack(mesh=mesh$mesh, data=Covs, ...)
+  stk <- MakePointsStack(presences=Covs[,c("long","lat")], coordnames=c("long","lat"), data=Covs, mesh=mesh,...)
+  #    stk=MakePointsStack(mesh=mesh$mesh, data=Covs, ...)
   stk
 }

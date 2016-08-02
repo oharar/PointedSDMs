@@ -9,7 +9,7 @@ AddDistToRangeToDataFrame(df, coords, polys, name = "dist", scale = FALSE)
 \arguments{
 \item{df}{Data frame.}
 
-\item{coords}{Names of coorinates.}
+\item{coords}{Names of coordinates.}
 
 \item{polys}{List of polygons (a spatialpolygonsdataframe will work).}
 

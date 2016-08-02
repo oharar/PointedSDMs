@@ -1,6 +1,6 @@
 #' Function to add distance to a list of polygons (e.g. range map) to a data frame
 #' @param df Data frame.
-#' @param coords Names of coorinates.
+#' @param coords Names of coordinates.
 #' @param polys List of polygons (a spatialpolygonsdataframe will work).
 #' @param name Name to be given to distance (defaults to "dist").
 #' @param scale Should the distance be scaled by dividing by the mean of the non-zero distances? (defaults to FALSE, either logical or numeric).

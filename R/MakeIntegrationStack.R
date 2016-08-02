@@ -10,7 +10,7 @@
 #'
 #' @export
 #' @import INLA
-GetIntegrationStack=function(mesh, data, area, tag='mesh', coordnames=c("X","Y"), InclCoords=FALSE) {
+MakeIntegrationStack=function(mesh, data, area, tag='mesh', coordnames=c("X","Y"), InclCoords=FALSE) {
   if(class(data)!="SpatialPointsDataFrame" & !all(coordnames%in%names(data))) stop("Coordinates not in the data")
 
   if(class(data)=="SpatialPointsDataFrame") {
@@ -21,10 +21,9 @@ GetIntegrationStack=function(mesh, data, area, tag='mesh', coordnames=c("X","Y")
   }
   if(InclCoords) Names  <- c(coordnames, Names)
 
-  NearestCovs=GetNearestCovariate(points=cbind(c(mesh$loc[,1]),
-                                               c(mesh$loc[,2])),
-                                  covs=data)
-  names(NearestCovs) <- names(data@data)
+  Points <- cbind(c(mesh$loc[,1]), c(mesh$loc[,2]))
+  colnames(Points) <- coordnames
+  NearestCovs=GetNearestCovariate(points=Points, covs=data)
   NearestCovs$Intercept <- rep(1,nrow(NearestCovs))
 
   # Projector matrix for integration points.

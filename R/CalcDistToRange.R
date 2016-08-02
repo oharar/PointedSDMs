@@ -9,7 +9,7 @@
 #'
 #' @export
 #' @import sp
-DistToRange <- function(polys, points) {
+CalcDistToRange <- function(polys, points) {
   #  points=Points.df[1:50,]; polys=PolyCoords[[1]]
   InPolys <- data.frame(lapply(polys, function(ply, pts)
     point.in.polygon(pts[,1], pts[,2], ply[,1], ply[,2]), pts=points))

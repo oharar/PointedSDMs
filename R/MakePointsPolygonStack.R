@@ -16,7 +16,7 @@
 #' @import sp
 #' @import INLA
 
-GetPointsPolygonStack=function(polys, data, coords=c("X","Y"), mesh, polydatanames,
+MakePointsPolygonStack=function(polys, data, coords=c("X","Y"), mesh, polydatanames,
                                respName="Present", tol=1e-1, tag="polygon", InclCoords=FALSE) {
   if(!all(coordnames%in%names(data))) stop("Coordinates not in the data")
   sp.points.df <- SpatialPointsDataFrame(data[,coords], data=data, proj4string = CRS("+proj=longlat +datum=WGS84"))

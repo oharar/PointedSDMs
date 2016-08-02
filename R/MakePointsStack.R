@@ -13,7 +13,7 @@
 #' @export
 #' @import INLA
 
-GetPointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
+MakePointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
                         coordnames=c("X","Y"), InclCoords=FALSE) {
   if(!all(coordnames%in%names(data))) stop("Coordinates not in the data")
   NearestCovs=GetNearestCovariate(points=presences[,coordnames], covs=data)

@@ -8,7 +8,7 @@
 #'
 #' @export
 GetNearestCovariate=function(points, covs) {
-  if(class(data)=="SpatialPointsDataFrame") {
+  if(class(covs)=="SpatialPointsDataFrame") {
     coordnames <- dimnames(covs@coords)[[2]]
     Names <- dimnames(covs@data)[[2]]
     covs <- as.data.frame(cbind(covs@coords, covs@data))
@@ -20,19 +20,3 @@ GetNearestCovariate=function(points, covs) {
   }, Covs=covs)
   cbind(points, covs[Nearest,-c(1,2)])
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

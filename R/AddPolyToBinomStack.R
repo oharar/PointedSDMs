@@ -4,7 +4,7 @@
 #' @param polys List of polygons (a spatialpolygonsdataframe will work).
 #' @param mesh A mesh.
 #' @param scale Scale argument to be passed to AddDistToDataFrame().
-#' @param ... Additional variables to pass to GetPointsStack(), e.g. tag.
+#' @param ... Additional variables to pass to MakePointsStack(), e.g. tag.
 #' @return A stack.
 #'
 #' @export
@@ -21,7 +21,7 @@ AddPolyToBinomStack <- function(stk, polys, mesh, scale=FALSE, ...) {
   pres.binom <- data.frame(long=stk$effects$data$long[stk$data$index$bbs],
                            lat=stk$effects$data$lat[stk$data$index$bbs],
                            NPres=stk$data$data$y.2, Ntrials=stk$data$data$Ntrials)
-  stk <- GetBinomStack(data=Covs.binom, pres=pres.binom, tag="bbs", intercept=TRUE,
+  stk <- MakeBinomStack(data=Covs.binom, pres=pres.binom, tag="bbs", intercept=TRUE,
                        mesh=mesh, coordnames=c("long","lat"), presname=c("NPres"),
                        trialname="Ntrials")
   stk

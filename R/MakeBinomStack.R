@@ -15,7 +15,7 @@
 #' @export
 #' @import INLA
 
-GetBinomStack=function(data, pres, tag="abund", intercept=TRUE, mesh, coordnames=c("X","Y"),
+MakeBinomStack=function(data, pres, tag="abund", intercept=TRUE, mesh, coordnames=c("X","Y"),
                        presname="NPres", trialname="Ntrials", InclCoords=FALSE) {
   if(!all(coordnames%in%names(data))) stop("Coordinates not in the data")
   if(!all(coordnames%in%names(pres))) stop("Coordinates not in the presence data")

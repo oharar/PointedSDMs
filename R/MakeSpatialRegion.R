@@ -17,16 +17,17 @@ MakeSpatialRegion=function(data=NULL, coords=c("X","Y"), meshpars, bdry=NULL) {
   if(is.null(bdry) & is.null(data)) stop("Either data or a boundary has to be supplied")
   if(is.null(bdry)) {
     if(!class(data)=="SpatialPointsDataFrame") {
-      dat.spat <- SpatialPointsDataFrame(data[,coords], data=data,
-                                         proj4string = CRS("+proj=longlat +datum=WGS84"))
+      dat.spat <- SpatialPointsDataFrame(data[,coords], data=data, proj4string = CRS("+proj=longlat"))
     }
     bstart <- min(c(diff(sort(unique(dat.spat@coords[,1]))), diff(sort(dat.spat@coords[,2]))))
     poly.tmp <- rgeos::gBuffer(dat.spat, width=bstart, byid=TRUE)
     bdry <-  rgeos::gBuffer(rgeos::gUnaryUnion(poly.tmp), width=bstart)
     #    bdry <-  gBuffer(gBuffer(gUnaryUnion(poly.tmp), width=bstart), width=0)
+  } else {
+    if(class(bdry)!="SpatialPolygons") bdry <- SpatialPolygons(Srl=list(Polygons(srl=list(bdry), ID="eek")))
   }
-  bdry <- rgeos::gBuffer(SpatialPolygons(Srl=list(Polygons(srl=list(bdry), ID="eek"))), width=0)
 
+  bdry <- rgeos::gBuffer(bdry, width=0)
   region.bdry <- inla.sp2segment(bdry)
 
   # Create mesh and spde object
