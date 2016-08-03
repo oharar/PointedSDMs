@@ -4,6 +4,7 @@
 #' @param coords Names of columns for coordinates (X & Y) in data. Ignored if data is NULL.
 #' @param meshpars List of parameters to be sent to inla.mesh.2d().
 #' @param bdry Polygon of boundary for region, of class Polygon. If NULL, draws a boundary around the points.
+#' @param proj Projection to use if data is not a projection. Defaults to utm (hopefully).
 #' @return A list with 3 elements:
 #'     . mesh: mesh (from inla.mesh.2d)
 #'     . spde: spde object for Matern model (from inla.spde2.matern)
@@ -12,19 +13,26 @@
 #' @export
 #' @import sp
 #' @import INLA
-MakeSpatialRegion=function(data=NULL, coords=c("X","Y"), meshpars, bdry=NULL) {
+MakeSpatialRegion=function(data=NULL, coords=c("X","Y"), meshpars, bdry=NULL, proj = CRS("+proj=utm")) {
   # data=Data; coords=c("Xorig", "Yorig"); meshpars=list(cutoff=0.5, max.edge=c(1, 3), offset=c(1,1))
   if(is.null(bdry) & is.null(data)) stop("Either data or a boundary has to be supplied")
   if(is.null(bdry)) {
     if(!class(data)=="SpatialPointsDataFrame") {
-      dat.spat <- SpatialPointsDataFrame(data[,coords], data=data, proj4string = CRS("+proj=longlat"))
+      dat.spat <- SpatialPointsDataFrame(data[,coords], data=data, proj4string = proj)
+    } else {
+      if(!is.projected(data)) data <- spTransform(data, CRSobj = proj)
     }
     bstart <- min(c(diff(sort(unique(dat.spat@coords[,1]))), diff(sort(dat.spat@coords[,2]))))
     poly.tmp <- rgeos::gBuffer(dat.spat, width=bstart, byid=TRUE)
     bdry <-  rgeos::gBuffer(rgeos::gUnaryUnion(poly.tmp), width=bstart)
+    bdry <- spTransform(bdry, CRSobj = proj)
     #    bdry <-  gBuffer(gBuffer(gUnaryUnion(poly.tmp), width=bstart), width=0)
   } else {
-    if(class(bdry)!="SpatialPolygons") bdry <- SpatialPolygons(Srl=list(Polygons(srl=list(bdry), ID="eek")))
+    if(class(bdry)!="SpatialPolygons") {
+      bdry <- SpatialPolygons(Srl=list(Polygons(srl=list(bdry), ID="eek")))
+    } else {
+      if(!is.projected(bdry)) bdry <- spTransform(bdry, CRSobj = proj)
+    }
   }
 
   bdry <- rgeos::gBuffer(bdry, width=0)

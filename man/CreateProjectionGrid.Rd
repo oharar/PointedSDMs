@@ -18,7 +18,7 @@ CreateProjectionGrid(nxy, mesh, data, tag = "pred", coordnames = c("x",
 
 \item{coordnames}{Names of coorinates (defaults to x and y)}
 
-\item{boundary}{Boundary of region to project onto. Defaults to NULL, when the boundary of the mesh will be used}
+\item{boundary}{Boundary of region to project onto. Defaults to NULL, when the boundary of the mesh will be used. Either of class SpatialPolygons or two columns with the coorinates of the polygon}
 }
 \value{
 An INLA stack onto which new data can be projected

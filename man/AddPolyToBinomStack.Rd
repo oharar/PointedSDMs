@@ -15,7 +15,7 @@ AddPolyToBinomStack(stk, polys, mesh, scale = FALSE, ...)
 
 \item{scale}{Scale argument to be passed to AddDistToDataFrame().}
 
-\item{...}{Additional variables to pass to GetPointsStack(), e.g. tag.}
+\item{...}{Additional variables to pass to MakePointsStack(), e.g. tag.}
 }
 \value{
 A stack.

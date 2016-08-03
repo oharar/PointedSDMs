@@ -5,7 +5,7 @@
 \title{Function to set up spatial structure for region}
 \usage{
 MakeSpatialRegion(data = NULL, coords = c("X", "Y"), meshpars,
-  bdry = NULL)
+  bdry = NULL, proj = CRS("+proj=utm"))
 }
 \arguments{
 \item{data}{Data (as data frame, with points having locations, or as a SpatialPointsDataFrame). Can be NULL, if bdry is not NULL.}
@@ -15,6 +15,8 @@ MakeSpatialRegion(data = NULL, coords = c("X", "Y"), meshpars,
 \item{meshpars}{List of parameters to be sent to inla.mesh.2d().}
 
 \item{bdry}{Polygon of boundary for region, of class Polygon. If NULL, draws a boundary around the points.}
+
+\item{proj}{Projection to use if data is not a projection. Defaults to utm (hopefully).}
 }
 \value{
 A list with 3 elements:

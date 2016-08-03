@@ -8,17 +8,15 @@ MakePointsStack(data, presences, tag = "points", intercept = TRUE, mesh,
   coordnames = c("X", "Y"), InclCoords = FALSE)
 }
 \arguments{
-\item{data}{Data frame with columns X and Y, and others are covariates.}
+\item{data}{SpatialPointsDataFrame of covariates.}
 
-\item{presences}{Data frame with columns X and Y for coordinates of points.}
+\item{presences}{SpatialPoints object of presences.}
 
 \item{tag}{Name for tag for the stack (defaults to "points").}
 
 \item{intercept}{Boolean, should an intercept be added? Defaults to TRUE.}
 
 \item{mesh}{INLA mesh.}
-
-\item{coordnames}{Names for columns with coordinates in data.}
 
 \item{InclCoords}{Boolean, shoiuld coordinates be included in data (defaults to FALSE).}
 }

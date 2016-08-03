@@ -7,14 +7,13 @@
 GetNearestCovariate(points, covs)
 }
 \arguments{
-\item{points}{Points for which we need covariates.}
+\item{points}{Points for which we need covariates. Either a SpatialPoints* object or a matrix with coordinates in columns.}
 
-\item{covs}{Covariates, with coordinates in first and second columns, or a SpatialPointsDataFrame object}
+\item{covs}{Covariates, with coordinates in first and second columns, or a SpatialPointsDataFrame object.}
 }
 \value{
-A matrix with the original points plus two columns with coorinates of nearest point.
+A SpatialPointsDataFrame with the original points plus the data from the closest point.
 If there are ties, this will use the first element.
-NOTE to self:  should probably pass coordinates in covs as names
 }
 \description{
 Function to get covariate values nearest the data/integration point
