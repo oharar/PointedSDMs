@@ -5,6 +5,7 @@
 #' @param tag Name for tag for the stack (defaults to "points").
 #' @param intercept Boolean, should an intercept be added? Defaults to TRUE.
 #' @param mesh INLA mesh.
+#' @param coordnames Names of coorninates
 #' @param InclCoords Boolean, shoiuld coordinates be included in data (defaults to FALSE).
 #'
 #' @return An INLA stack with points
@@ -13,12 +14,14 @@
 #' @import INLA
 
 MakePointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
-                         coordnames=c("X","Y"), InclCoords=FALSE) {
+                         coordnames=NULL, InclCoords=FALSE) {
   NearestCovs=GetNearestCovariate(points=presences, covs=data)
+  if(is.null(coordnames)) coordnames <- colnames(data@coords)
 
   # Projector matrix from mesh to data.
+  NearestCovs@data[,paste("int",tag,sep=".")] <- 1
   if(InclCoords) {
-    NearestCovs@data[,paste("int",tag,sep=".")] <- 1
+    NearestCovs@data[,coordnames] <- data@coords
   }
   projmat <- inla.spde.make.A(mesh, as.matrix(NearestCovs@coords)) # from mesh to point observations
 
