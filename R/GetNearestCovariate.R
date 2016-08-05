@@ -18,6 +18,6 @@ GetNearestCovariate <- function(points, covs) {
     dists <- spDistsN1(pts, pt, longlat = TRUE)
     which(dists==min(dists))
   }, pts=covs)
-  points.df <- SpatialPointsDataFrame(coords=points@coords, data = covs@data[Nearest,])
+  points.df <- SpatialPointsDataFrame(coords=points@coords, data = covs@data[Nearest,], proj4string = CRS(proj4string(covs)))
   points.df
 }

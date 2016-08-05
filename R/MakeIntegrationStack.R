@@ -14,8 +14,8 @@ MakeIntegrationStack=function(mesh, data, area, tag='mesh', coordnames=c("X","Y"
   if(class(data)!="SpatialPointsDataFrame" & !all(coordnames%in%names(data))) stop("Coordinates not in the data")
 
   if(class(data)=="SpatialPointsDataFrame") {
-    coordnames <- dimnames(data@coords)[[2]]
-    Names <- dimnames(data@data)[[2]]
+    coordnames <- colnames(data@coords)
+    Names <- colnames(data@data)
   } else {
     Names  <- names(data)[!names(data)%in%coordnames]
   }
@@ -23,13 +23,16 @@ MakeIntegrationStack=function(mesh, data, area, tag='mesh', coordnames=c("X","Y"
 
   Points <- cbind(c(mesh$loc[,1]), c(mesh$loc[,2]))
   colnames(Points) <- coordnames
-  NearestCovs=GetNearestCovariate(points=Points, covs=data)
+  NearestCovs <- GetNearestCovariate(points=Points, covs=data)
   NearestCovs$Intercept <- rep(1,nrow(NearestCovs))
+  if(InclCoords) {
+    NearestCovs@data[,colnames(NearestCovs@coords)] <- NearestCovs@coords
+  }
 
   # Projector matrix for integration points.
   projmat.ip <- Matrix::Diagonal(mesh$n, rep(1, mesh$n))  # from mesh to integration points
 
   stk.ip <- inla.stack(data=list(y=cbind(rep(0,mesh$n), NA), e=area), A=list(1,projmat.ip), tag=tag,
-                       effects=list(NearestCovs[,c(Names, "Intercept")], list(i=1:mesh$n)))
+                       effects=list(NearestCovs@data, list(i=1:mesh$n)))
   stk.ip
 }

@@ -5,7 +5,7 @@
 \title{Function to create stack for presence only points}
 \usage{
 MakePointsStack(data, presences, tag = "points", intercept = TRUE, mesh,
-  coordnames = c("X", "Y"), InclCoords = FALSE)
+  coordnames = NULL, InclCoords = FALSE, polynoms = NULL, scale = FALSE)
 }
 \arguments{
 \item{data}{SpatialPointsDataFrame of covariates.}
@@ -18,7 +18,14 @@ MakePointsStack(data, presences, tag = "points", intercept = TRUE, mesh,
 
 \item{mesh}{INLA mesh.}
 
+\item{coordnames}{Names of coorninates.}
+
 \item{InclCoords}{Boolean, shoiuld coordinates be included in data (defaults to FALSE).}
+
+\item{polynoms}{If not NULL, a SpatialPolygons object, with (for example) range maps.}
+
+\item{scale}{Should the distance be scaled by dividing by the mean of the non-zero distances?
+Defaults to FALSE, either logical or numeric. Ignored if polynoms is NULL.}
 }
 \value{
 An INLA stack with points
