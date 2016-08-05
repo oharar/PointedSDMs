@@ -4,28 +4,33 @@
 \alias{MakeBinomStack}
 \title{Function to create stack for presence only points}
 \usage{
-MakeBinomStack(data, pres, tag = "abund", intercept = TRUE, mesh,
-  coordnames = c("X", "Y"), presname = "NPres", trialname = "Ntrials",
-  InclCoords = FALSE)
+MakeBinomStack(data, observs, tag = "points", intercept = TRUE, mesh,
+  presname = "NPres", trialname = "Ntrials", coordnames = NULL,
+  InclCoords = FALSE, polynoms = NULL, scale = FALSE)
 }
 \arguments{
-\item{data}{Data frame with columns X and Y, and others are covariates.}
+\item{data}{SpatialPointsDataFrame of covariates.}
 
-\item{pres}{Data frame with columns X and Y for coordinates of points, and number of occurrances & number of trials.}
+\item{observs}{SpatialPoints object of presences and trials.}
 
-\item{tag}{Name for tag for the stack (defaults to "abund").}
+\item{tag}{Name for tag for the stack (defaults to "points").}
 
 \item{intercept}{Boolean, should an intercept be added? Defaults to TRUE.}
 
 \item{mesh}{INLA mesh.}
 
-\item{coordnames}{Names for columns with coordinates in data.}
+\item{presname}{Names of persences column in observs. Defaults to "NPres".}
 
-\item{presname}{Name of column with presences.}
+\item{trialname}{Names of column of number of columns in observs. Defaults to "Ntrials".}
 
-\item{trialname}{Name of column with total number of visits.}
+\item{coordnames}{Names of coordinates.}
 
-\item{InclCoords}{Boolean, should coordinates be included in data (defaults to FALSE).}
+\item{InclCoords}{Boolean, shoiuld coordinates be included in data (defaults to FALSE).}
+
+\item{polynoms}{If not NULL, a SpatialPolygons object, with (for example) range maps.}
+
+\item{scale}{Should the distance be scaled by dividing by the mean of the non-zero distances?
+Defaults to FALSE, either logical or numeric. Ignored if polynoms is NULL.}
 }
 \value{
 An INLA stack with binomial data: include Ntrials, which is the number of trials

@@ -1,45 +1,49 @@
 #' Function to create stack for presence only points
 #'
-#' @param data Data frame with columns X and Y, and others are covariates.
-#' @param pres Data frame with columns X and Y for coordinates of points, and number of occurrances & number of trials.
-#' @param tag Name for tag for the stack (defaults to "abund").
+#' @param data SpatialPointsDataFrame of covariates.
+#' @param observs SpatialPoints object of presences and trials.
+#' @param tag Name for tag for the stack (defaults to "points").
 #' @param intercept Boolean, should an intercept be added? Defaults to TRUE.
 #' @param mesh INLA mesh.
-#' @param coordnames Names for columns with coordinates in data.
-#' @param presname Name of column with presences.
-#' @param trialname Name of column with total number of visits.
-#' @param InclCoords Boolean, should coordinates be included in data (defaults to FALSE).
+#' @param presname Names of persences column in observs. Defaults to "NPres".
+#' @param trialname Names of column of number of columns in observs. Defaults to "Ntrials".
+#' @param coordnames Names of coordinates.
+#' @param InclCoords Boolean, shoiuld coordinates be included in data (defaults to FALSE).
+#' @param polynoms If not NULL, a SpatialPolygons object, with (for example) range maps.
+#' @param scale Should the distance be scaled by dividing by the mean of the non-zero distances?
+#' Defaults to FALSE, either logical or numeric. Ignored if polynoms is NULL.
 #'
 #' @return An INLA stack with binomial data: include Ntrials, which is the number of trials
 #'
 #' @export
 #' @import INLA
 
-MakeBinomStack=function(data, pres, tag="abund", intercept=TRUE, mesh, coordnames=c("X","Y"),
-                       presname="NPres", trialname="Ntrials", InclCoords=FALSE) {
-  if(!all(coordnames%in%names(data))) stop("Coordinates not in the data")
-  if(!all(coordnames%in%names(pres))) stop("Coordinates not in the presence data")
+MakeBinomStack=function(data, observs, tag="points", intercept=TRUE, mesh, presname="NPres", trialname="Ntrials",
+                        coordnames=NULL, InclCoords=FALSE, polynoms = NULL, scale = FALSE) {
+
   if(length(presname)>1) stop("more than one name given for presences column")
   if(length(trialname)>1) stop("more than one name given for number of trials column")
+  if(!presname%in%names(observs@data)) stop(paste(presname," not in names of presences data frame", sep=""))
+  if(!trialname%in%names(observs@data)) stop(paste(trialname," not in names of presences data frame", sep=""))
 
-  if(!presname%in%names(pres)) stop(paste(presname," not in names of presences data frame", sep=""))
-  if(!trialname%in%names(pres)) stop(paste(trialname," not in names of presences data frame", sep=""))
+  if(is.null(coordnames)) coordnames <- colnames(data@coords)
+  if(!is.null(polynoms)) {
+    if(class(polynoms) != "SpatialPolygonsDataFrame" & class(polynoms) != "SpatialPolygons")
+      stop("polynoms should be a spatial polygon")
+  }
 
-  NearestCovs=GetNearestCovariate(points=pres[,coordnames], covs=data)
-  names(NearestCovs) <- c(coordnames, names(data)[!names(data)%in%coordnames])
+  NearestCovs <- GetNearestCovariate(points=observs, covs=data)
+  if(InclCoords) {    data@data[,coordnames] <- data@coords  }
+  if(intercept) NearestCovs@data[,paste("int",tag,sep=".")] <- 1 # add intercept
+  if(!is.null(polynoms)) {
+    NearestCovs <- AddDistToRangeToSpatialDataFrame(data = NearestCovs, polys = polynoms, scale=scale)
+  }
 
   # Projector matrix from mesh to data.
-  projmat <- inla.spde.make.A(mesh, as.matrix(pres[,coordnames]))
+  projmat <- inla.spde.make.A(mesh, as.matrix(NearestCovs@coords)) # from mesh to point observations
 
-  CovEffects=NearestCovs[,!names(NearestCovs)%in%coordnames]
-  if(InclCoords) {
-    CovEffects <- NearestCovs
-  }  else  {
-    CovEffects <- NearestCovs[,!names(NearestCovs)%in%coordnames]
-  }
-  if(intercept)  CovEffects[,paste("int",tag,sep=".")]=rep(1,nrow(NearestCovs))
+  stk.binom <- inla.stack(data=list(y=cbind(NA,observs@data[,presname] ), Ntrials=observs@data[,trialname]), A=list(1,projmat), tag=tag,
+                          effects=list(NearestCovs@data, list(i=1:mesh$n)))
 
-  stk.binom <- inla.stack(data=list(y=cbind(NA,pres[,presname] ), Ntrials=pres[,trialname]), A=list(1,projmat), tag=tag,
-                          effects=list(CovEffects, list(i=1:mesh$n)))
   stk.binom
 }
