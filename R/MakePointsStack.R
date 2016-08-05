@@ -15,14 +15,24 @@
 
 MakePointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
                          coordnames=NULL, InclCoords=FALSE) {
+<<<<<<< HEAD
   if(is.null(coordnames)) coordnames <- colnames(data@coords)
   if(InclCoords) {
     data@data[,coordnames] <- data@coords
   }
+=======
+>>>>>>> b8b7301c20ec333122273360b66894448597b257
   NearestCovs=GetNearestCovariate(points=presences, covs=data)
+  if(is.null(coordnames)) coordnames <- colnames(data@coords)
 
   # Projector matrix from mesh to data.
   NearestCovs@data[,paste("int",tag,sep=".")] <- 1
+<<<<<<< HEAD
+=======
+  if(InclCoords) {
+    NearestCovs@data[,coordnames] <- data@coords
+  }
+>>>>>>> b8b7301c20ec333122273360b66894448597b257
   projmat <- inla.spde.make.A(mesh, as.matrix(NearestCovs@coords)) # from mesh to point observations
 
   stk.pp <- inla.stack(data=list(y=cbind(rep(1,nrow(NearestCovs)), NA),
