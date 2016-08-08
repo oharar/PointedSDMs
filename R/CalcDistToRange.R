@@ -1,7 +1,7 @@
 #' Function to calculate  distance to a list of polygons (e.g. range map) from a matrix of points
 #'
 #' @param polys List of polygons (a spatialpolygonsdataframe will work).
-#' @param points Names of coorinates.
+#' @param points Names of coordinates.
 #'
 #' @return A vector of distances
 #'

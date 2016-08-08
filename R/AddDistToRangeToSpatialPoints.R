@@ -1,14 +1,15 @@
-#' Function to add distance to a polygon to spatial points data frame
-#' @param data Data points frame (might work for other spatial data frames too).
+#' Function to add distance to a polygon to a spatial points object
+#' @param data SpatialPoints* object
 #' @param polys A spatialpolygonsdataframe.
 #' @param scale Should the distance be scaled by dividing by the mean of the non-zero distances? (defaults to FALSE, either logical or numeric).
 #'
-#' @return The spatial points data frame with distances to the polygon added
+#' @return A spatial points data frame with distances to the polygon added.
 #'
 #' @export
 #' @import sp
 #' @import INLA
-AddDistToRangeToSpatialDataFrame <- function(data, polys, scale=FALSE) {
+AddDistToRangeToSpatialPoints <- function(data, polys, scale=FALSE) {
+  if(!grepl("^SpatialPoints", class(data))) stop("data should be a SpatialPoints* object")
   if(!is.logical(scale) & !is.numeric(scale)) stop("scale should be numeric or logial")
   if(is.numeric(scale) & !(scale>0)) stop("scale should be positive")
 
@@ -28,8 +29,11 @@ AddDistToRangeToSpatialDataFrame <- function(data, polys, scale=FALSE) {
   } else {
     colnames(DistToPolys) <- paste0("DistToPoly", seq_along(polys@polygons))
   }
-
   # Add distance to stack
-  data@data[,colnames(DistToPolys)] <- DistToPolys
+  if(class(data)!="SpatialPointsDataFrame") {
+    data <- SpatialPointsDataFrame(data, data=as.data.frame(DistToPolys))
+  } else {
+    data@data[,colnames(DistToPolys)] <- DistToPolys
+  }
   data
 }

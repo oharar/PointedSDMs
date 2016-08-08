@@ -4,16 +4,14 @@
 \alias{AddDistToRangeToStack}
 \title{Function to add distance to a list of polygons (e.g. range map) to a stack}
 \usage{
-AddDistToRangeToStack(in.stk, coords, polys, name = "dist", scale = FALSE)
+AddDistToRangeToStack(in.stk, coords, polys, scale = FALSE)
 }
 \arguments{
 \item{in.stk}{INLA data stack.}
 
-\item{coords}{Names of coorinates.}
+\item{coords}{Names of geographic coordinates used in in.stk.}
 
 \item{polys}{List of polygons (a spatialpolygonsdataframe will work).}
-
-\item{name}{Name to be given to distance (defaults to "dist").}
 
 \item{scale}{Should the distance be scaled by dividing by the mean of the non-zero distances? (defaults to FALSE, eitehr logical or numeric).}
 }

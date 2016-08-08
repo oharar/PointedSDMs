@@ -9,7 +9,7 @@ CalcDistToRange(polys, points)
 \arguments{
 \item{polys}{List of polygons (a spatialpolygonsdataframe will work).}
 
-\item{points}{Names of coorinates.}
+\item{points}{Names of coordinates.}
 }
 \value{
 A vector of distances

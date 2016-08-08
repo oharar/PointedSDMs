@@ -31,9 +31,10 @@ CreateProjectionGrid  <- function(nxy, mesh, data, tag='pred', coordnames = c("x
   colnames(predcoords) <- coordnames
   Apred <- projgrid$proj$A[which(xy.in), ]
 
-  # Extract covariates for points
+  # Extract covariates for points, add intercept and coordinates
   NearestCovs=GetNearestCovariate(points=predcoords, covs=data)
   NearestCovs$Intercept=1
+  NearestCovs@data[,colnames(NearestCovs@coords)] <- NearestCovs@coords
 
   # stack the predicted data
   stk <- inla.stack(list(Y=cbind(NA, rep(NA, nrow(NearestCovs))), e=rep(0, nrow(NearestCovs))),

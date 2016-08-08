@@ -28,7 +28,7 @@ MakePointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
   if(InclCoords) {    data@data[,coordnames] <- data@coords  }
   if(intercept) NearestCovs@data[,paste("int",tag,sep=".")] <- 1 # add intercept
   if(!is.null(polynoms)) {
-    NearestCovs <- AddDistToRangeToSpatialDataFrame(data = NearestCovs, polys = polynoms, scale=scale)
+    NearestCovs <- AddDistToRangeToSpatialPoints(data = NearestCovs, polys = polynoms, scale=scale)
   }
 
   # Projector matrix from mesh to data.
