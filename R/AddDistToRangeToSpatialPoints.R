@@ -14,12 +14,12 @@ AddDistToRangeToSpatialPoints <- function(data, polys, scale=FALSE) {
   if(is.numeric(scale) & !(scale>0)) stop("scale should be positive")
 
   # calculate distances
-  DistToPolys <- sapply(seq_along(polys), function(wh, Polys, Data) {
-    NotInPoly <- is.na(over(x=Data, y=Polys[wh,])$crtdb_d)
+  DistToPolys <- sapply(seq_along(polys), function(wh, Polys, dat) {
+    NotInPoly <- is.na(over(x=dat, y=Polys[wh,])[,1]) # NA if points no in a polygon
     Dist <- as.numeric(NotInPoly)
-    Dist[NotInPoly] <- geosphere::dist2Line(p=Data[NotInPoly,], line=Polys[wh,])[,"distance"]
+    Dist[NotInPoly] <- geosphere::dist2Line(p=dat[NotInPoly,], line=Polys[wh,])[,"distance"]
     Dist
-  }, Polys=polys, Data=data)
+  }, Polys=polys, dat=data)
 
   # scale distances
   if(is.logical(scale)) DistToPolys <- sweep(DistToPolys, 2, apply(DistToPolys, 2, function(x) mean(x[x>0])), "/")
