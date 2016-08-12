@@ -17,7 +17,9 @@ AddDistToRangeToSpatialPoints <- function(data, polys, scale=FALSE) {
   DistToPolys <- sapply(seq_along(polys), function(wh, Polys, dat) {
     NotInPoly <- is.na(over(x=dat, y=Polys[wh,])[,1]) # NA if points no in a polygon
     Dist <- as.numeric(NotInPoly)
-    Dist[NotInPoly] <- geosphere::dist2Line(p=dat[NotInPoly,], line=Polys[wh,])[,"distance"]
+    if(any(NotInPoly==1)) {
+      Dist[NotInPoly] <- geosphere::dist2Line(p=dat[NotInPoly,], line=Polys[wh,])[,"distance"]
+    }
     Dist
   }, Polys=polys, dat=data)
 
