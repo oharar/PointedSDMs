@@ -1,7 +1,7 @@
-This is an R package to fit SDMs in R using a point process formulation. It uses INLA to do the fitting, but this needs a bit of fiddling around to get the data into the right format.
-
+This is an R package to fit SDMs in R using a point process formulation. It uses INLA to do the fitting
 
 To Do
 
-GetNearestCovariate() needs to be re-written
-A test suite should be developed.
+- A test suite should be developed.
+- Add some data (ideally needs an expert range map, presence/absence, point observations)
+- Check it works with anything other than the current data
