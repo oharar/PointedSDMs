@@ -35,12 +35,13 @@ SolTin_parks <- as.data.frame(
   unlist(lapply(lst, function(list, WH) list[[WH]], WH=wh))
 }, lst=Parks.lst, simplify=TRUE))
 SolTin_parks$Present <- SolTin_parks$ParkPres>0
-SolTin_parks <- SolTin_parks[,names(SolTin_parks)!="ParkPres"]
+SolTin_parks <- SolTin_parks[,c("X", "Y", "area", "Present")]
 
 SolTin_covariates <- Data[,c("ID", "For", "NPP", "Alt", "X", "Y")]
 
 # Write data
-use_data(SolTin_ebird) #, pkg=PointedSDMs)
-use_data(SolTin_gbif) #, pkg=PointedSDMs)
-use_data(SolTin_parks) #, pkg=PointedSDMs)
-use_data(SolTin_covariates) #, pkg=PointedSDMs)
+use_data(SolTin_ebird, overwrite = TRUE) #, pkg=PointedSDMs)
+use_data(SolTin_gbif, overwrite = TRUE) #, pkg=PointedSDMs)
+use_data(SolTin_parks, overwrite = TRUE) #, pkg=PointedSDMs)
+use_data(SolTin_covariates, overwrite = TRUE) #, pkg=PointedSDMs)
+
