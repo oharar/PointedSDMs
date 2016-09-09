@@ -4,12 +4,12 @@
 \alias{AddPolyToPointsStack}
 \title{Function to add distance to a list of polygons (e.g. range map) to a points stack}
 \usage{
-AddPolyToPointsStack(stk, polys, mesh, scale = FALSE, ...)
+AddPolyToPointsStack(stk, polynoms, mesh, scale = FALSE, ...)
 }
 \arguments{
 \item{stk}{Stack for points.}
 
-\item{polys}{List of polygons (a spatialpolygonsdataframe will work).}
+\item{polynoms}{List of polygons (a spatialpolygonsdataframe will work).}
 
 \item{mesh}{A mesh.}
 

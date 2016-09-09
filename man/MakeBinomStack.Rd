@@ -19,9 +19,11 @@ MakeBinomStack(data, observs, tag = "points", intercept = TRUE, mesh,
 
 \item{mesh}{INLA mesh.}
 
-\item{presname}{Names of persences column in observs. Defaults to "NPres".}
+\item{presname}{Names of presences column in observs. Defaults to "NPres".
+Note that this column can also be logical.}
 
-\item{trialname}{Names of column of number of columns in observs. Defaults to "Ntrials".}
+\item{trialname}{Names of column of number of columns in observs.
+Defaults to "Ntrials", ignored if presences column is logical.}
 
 \item{coordnames}{Names of coordinates.}
 

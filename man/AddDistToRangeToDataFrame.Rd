@@ -4,14 +4,15 @@
 \alias{AddDistToRangeToDataFrame}
 \title{Function to add distance to a list of polygons (e.g. range map) to a data frame}
 \usage{
-AddDistToRangeToDataFrame(df, coords, polys, name = "dist", scale = FALSE)
+AddDistToRangeToDataFrame(df, coords, polynoms, name = "dist",
+  scale = FALSE)
 }
 \arguments{
 \item{df}{Data frame.}
 
 \item{coords}{Names of coordinates.}
 
-\item{polys}{List of polygons (a spatialpolygonsdataframe will work).}
+\item{polynoms}{List of polygons (a spatialpolygonsdataframe will work).}
 
 \item{name}{Name to be given to distance (defaults to "dist").}
 

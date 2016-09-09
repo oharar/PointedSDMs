@@ -39,7 +39,7 @@ MakePointsPolygonStack=function(polys, data, coords=c("X","Y"), mesh, polydatana
 
   projmat <- inla.spde.make.A(mesh, as.matrix(dat[,c("X","Y")])) # from mesh to presence/absence
 
-  stk <- inla.stack(list(y=cbind(NA, dat[,respName]), e=Area),
+  stk <- inla.stack(list(resp=cbind(NA, dat[,respName]), e=Area),
                     A=list(1,projmat), tag=tag, Ntrials=rep(1, nrow(dat)),
                     effects=list(CovEffects, list(i=1:mesh$n)))
   stk

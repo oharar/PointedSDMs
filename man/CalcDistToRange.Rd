@@ -4,10 +4,10 @@
 \alias{CalcDistToRange}
 \title{Function to calculate  distance to a list of polygons (e.g. range map) from a matrix of points}
 \usage{
-CalcDistToRange(polys, points)
+CalcDistToRange(polynoms, points)
 }
 \arguments{
-\item{polys}{List of polygons (a spatialpolygonsdataframe will work).}
+\item{polynoms}{List of polygons (a spatialpolygonsdataframe will work).}
 
 \item{points}{Names of coordinates.}
 }

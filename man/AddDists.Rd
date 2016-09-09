@@ -4,10 +4,10 @@
 \alias{AddDists}
 \title{Function to add distance to a list of polygons (e.g. range map) to a data frame}
 \usage{
-AddDists(polys, covs, scale = FALSE)
+AddDists(polynoms, covs, scale = FALSE)
 }
 \arguments{
-\item{polys}{List of polygons (a spatialpolygonsdataframe will work).}
+\item{polynoms}{List of polygons (a spatialpolygonsdataframe will work).}
 
 \item{covs}{Data frame of covariates.}
 

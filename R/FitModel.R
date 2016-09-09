@@ -3,7 +3,7 @@
 #' @param ... Data stacks.
 #' @param CovNames Names of covariates to use. If NULL will use all in stack effects.
 #' @param mesh INLA mesh.
-#' @param spat.ind Intext for spatial mesh. Defaults to i.
+#' @param spat.ind Index for spatial mesh. Defaults to i. Set to NULL if no spatial term is wanted
 #' @param predictions Boolean: should predictions be made? Defaults to FALSE
 #' @param tag.pred Name of tag for predictions. Defaults to "pred".
 #' @return If predictions is TRUE, a list with
@@ -20,7 +20,8 @@ FitModel <- function(..., CovNames=NULL, mesh, spat.ind = "i", predictions=FALSE
     CovNames <- CovNames[!CovNames%in%c(spat.ind)]
   }
   mesh <- inla.spde2.matern(mesh)
-  Formula <- formula(paste(c("y ~ 0 ", CovNames, paste0("f(", spat.ind, ", model=mesh)")), collapse="+"))
+  if(!is.null(spat.ind)) CovNames <- c(CovNames, paste0("f(", spat.ind, ", model=mesh)"))
+  Formula <- formula(paste(c("resp ~ 0 ", CovNames), collapse="+"))
 
   # Fit model including predictions
   mod <- inla(Formula, family=c('poisson','binomial'),

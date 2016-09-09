@@ -28,13 +28,13 @@ MakePointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
   if(InclCoords) {    data@data[,coordnames] <- data@coords  }
   if(intercept) NearestCovs@data[,paste("int",tag,sep=".")] <- 1 # add intercept
   if(!is.null(polynoms)) {
-    NearestCovs <- AddDistToRangeToSpatialPoints(data = NearestCovs, polys = polynoms, scale=scale)
+    NearestCovs <- AddDistToRangeToSpatialPoints(data = NearestCovs, polynoms = polynoms, scale=scale)
   }
 
   # Projector matrix from mesh to data.
   projmat <- inla.spde.make.A(mesh, as.matrix(NearestCovs@coords)) # from mesh to point observations
 
-  stk.pp <- inla.stack(data=list(y=cbind(rep(1,nrow(NearestCovs)), NA),
+  stk.pp <- inla.stack(data=list(resp=cbind(rep(1,nrow(NearestCovs)), NA),
                                  e=rep(0, nrow(NearestCovs))), A=list(1,projmat), tag=tag,
                        effects=list(NearestCovs@data, list(i=1:mesh$n)))
   stk.pp

@@ -12,7 +12,7 @@ AddPolyToBinomStack <- function(stk, polys, mesh, scale=FALSE, ...) {
   Covs.binom <- stk$effects$data[stk$data$index[[1]],names(stk$effects$data)!="Intercept"]
   dists <- parallel::mclapply(polys, function(pcs, IP) {
     df <- AddDistToRangeToDataFrame(df=IP, coords=c("long", "lat"),
-                                    polys=pcs, name="Name", scale=scale)
+                                    polynoms = pcs, name="Name", scale=scale)
     df[,"Name"]
   }, IP=Covs.binom)
   names(dists) <- gsub('[_-]', "", names(dists))   # give correct names

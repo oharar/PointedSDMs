@@ -14,7 +14,7 @@ FitModel(..., CovNames = NULL, mesh, spat.ind = "i", predictions = FALSE,
 
 \item{mesh}{INLA mesh.}
 
-\item{spat.ind}{Intext for spatial mesh. Defaults to i.}
+\item{spat.ind}{Index for spatial mesh. Defaults to i. Set to NULL if no spatial term is wanted}
 
 \item{predictions}{Boolean: should predictions be made? Defaults to FALSE}
 

@@ -39,7 +39,8 @@ MakeSpatialRegion=function(data=NULL, coords=c("X","Y"), meshpars, bdry=NULL, pr
   region.bdry <- inla.sp2segment(bdry)
 
   # Create mesh and spde object
-  mesh <- inla.mesh.2d(boundary=region.bdry, cutoff=meshpars$cutoff, max.edge=meshpars$max.edge, offset=meshpars$offset)
+  mesh <- inla.mesh.2d(boundary=region.bdry, cutoff=meshpars$cutoff,
+                       max.edge=meshpars$max.edge, offset=meshpars$offset)
   # region.mesh <- inla.mesh.2d(boundary=region.bdry, cutoff=0.1, max.edge=c(0.1, 3), offset=c(1,1))
   spde <- inla.spde2.matern(mesh=mesh, alpha=2) # create spde object
   #  theta <- c(-log(4*pi*s2x*kappa^2), log(kappa))

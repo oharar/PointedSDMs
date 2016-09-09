@@ -1,3 +1,17 @@
+#' Covariate information for teh region around therange of the solitary tinomou
+#'
+#' @format A data frame with the coordinates of centroids of national parks plus
+#' the area and whether the Solitary Tinomou was recorded as present:
+#' \describe{
+#' \item{\code{X}}{Longitude}
+#' \item{\code{Y}}{Latitude}
+#' \item{\code{Forest}}{Percentage of area covered by forest}
+#' \item{\code{NPP}}{Net Primary Productivity}
+#' \item{\code{Altitude}}{Altitude}
+#' }
+#'
+"SolTin_covariates"
+
 #' Recorded Observations of the Solitary Tinomou, from eBird
 #'
 #' @format A data frame with the coordinates of observations as two variables:
@@ -28,23 +42,20 @@
 #' \item{\code{X}}{Longitude}
 #' \item{\code{Y}}{Latitude}
 #' \item{\code{area}}{Area of the park, }
-#' \item{\code{Y}}{Logical, whether the species is recorded as present in the park.}
+#' \item{\code{Present}}{Logical, whether the species is recorded as present in the park.}
 #' }
 #'
 #' @source \url{http://www.gbif.org/}
 "SolTin_parks"
 
-#' Covariate information for teh region around therange of the solitary tinomou
+#' Points of polygon for solitary timanou range map
 #'
-#' @format A data frame with the coordinates of centroids of national parks plus
-#' the area and whether the Solitary Tinomou was recorded as present:
+#' @format A data frame with the coordinates of vertives of the polygon of the expert
+#' range map for the Solitary Tinomou.
 #' \describe{
 #' \item{\code{X}}{Longitude}
 #' \item{\code{Y}}{Latitude}
-#' \item{\code{Forest}}{Percentage of area covered by forest}
-#' \item{\code{NPP}}{Net Primary Productivity}
-#' \item{\code{Altitude}}{Altitude}
 #' }
 #'
-"SolTin_covariates"
+"SolTin_range"
 

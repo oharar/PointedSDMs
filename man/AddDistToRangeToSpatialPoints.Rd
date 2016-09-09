@@ -4,12 +4,12 @@
 \alias{AddDistToRangeToSpatialPoints}
 \title{Function to add distance to a polygon to a spatial points object}
 \usage{
-AddDistToRangeToSpatialPoints(data, polys, scale = FALSE)
+AddDistToRangeToSpatialPoints(data, polynoms, scale = FALSE)
 }
 \arguments{
 \item{data}{SpatialPoints* object}
 
-\item{polys}{A spatialpolygonsdataframe.}
+\item{polynoms}{A spatialpolygonsdataframe.}
 
 \item{scale}{Should the distance be scaled by dividing by the mean of the non-zero distances? (defaults to FALSE, either logical or numeric).}
 }

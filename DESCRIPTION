@@ -7,7 +7,7 @@ Date: 2016-08-01
 Author: Bob O'Hara
 Maintainer: Bob O'Hara <bohara@senckenberg.de>
 Description: A package to fit models based on point processes to a variety of data types.
-Depends:
+Depends: R (>= 2.10),
     INLA,
     sp,
 Imports: deldir, geosphere, Matrix, parallel, raster, rgeos, splancs
@@ -15,3 +15,6 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Comemnt: foreign,ggplot2,gpclib,gridExtra,lattice,maptools,maps,MASS,spatstat,
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
