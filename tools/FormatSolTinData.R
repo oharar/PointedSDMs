@@ -34,7 +34,7 @@ CovsToUse <- c( "For", "NPP", "Alt")
 range.mask=as.owin(cbind(Data[,c("Xorig","Yorig")],In=Data$range), step=c(0.25, 0.3))
 range.mask$m[is.na(range.mask$m)] <- FALSE
 range.poly=simplify.owin(as.polygonal(range.mask), dmin=0.5)
-plot(range.poly)
+# plot(range.poly)
 
 SolTin_range <- data.frame(X=range.poly$bdry[[1]]$x, Y=range.poly$bdry[[1]]$y)
 
@@ -69,6 +69,18 @@ names(SolTin_parks) <- gsub("orig","", names(SolTin_parks))
 SolTin_covariates <- Data[,c("Xorig", "Yorig", "For", "NPP", "Alt")]
 names(SolTin_covariates) <- c("X", "Y", "Forest", "NPP", "Altitude")
 
+# Region polygon
+region.mask <- as.owin(cbind(SolTin_covariates[,c("X","Y")], In=rep(TRUE,nrow(SolTin_covariates))),
+                    step=c(0.25, 0.3))
+region.mask$m[is.na(region.mask$m)] <- FALSE
+Region.poly <- simplify.owin(as.polygonal(region.mask), dmin=0.5)
+SolTin_polygon <- data.frame(X=Region.poly$bdry[[1]]$x[c(1,length(Region.poly$bdry[[1]]$x):1)],
+                             Y=Region.poly$bdry[[1]]$y[c(1,length(Region.poly$bdry[[1]]$y):1)])
+
+# SolTin_polygon <- Polygons(list(region=Polygon(coords=PolyPoints)), ID="region")
+# region.polygon=SpatialPolygons(list(Pgon), proj4string = Projection)
+
+
 # Write data
 use_data(SolTin_ebird, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_gbif, overwrite = TRUE) #, pkg=PointedSDMs)
@@ -76,3 +88,10 @@ use_data(SolTin_parks, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_covariates, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_covariates, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_range, overwrite = TRUE) #, pkg=PointedSDMs)
+use_data(SolTin_polygon, overwrite = TRUE) #, pkg=PointedSDMs)
+
+# Spare code to create test files, before editting them
+# sapply(dir("R")[!grepl("MakeSpatialRegion", dir("R"))], function(filename) {
+#   functionname <- gsub("\\.R", "", filename)
+#   file.copy("tests/testthat/test-MakeSpatialRegion.R", paste0("tests/testthat/test-", functionname, ".R"), overwrite=TRUE)
+# })

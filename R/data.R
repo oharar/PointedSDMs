@@ -48,6 +48,17 @@
 #' @source \url{http://www.gbif.org/}
 "SolTin_parks"
 
+#' Points of polygon for region of study for solitary timanou
+#'
+#' @format A data frame with the coordinates of vertives of the polygon of the region
+#' where the covariates are recorded for the Solitary Tinomou.
+#' \describe{
+#' \item{\code{X}}{Longitude}
+#' \item{\code{Y}}{Latitude}
+#' }
+#'
+"SolTin_polygon"
+
 #' Points of polygon for solitary timanou range map
 #'
 #' @format A data frame with the coordinates of vertives of the polygon of the expert

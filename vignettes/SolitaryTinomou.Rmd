@@ -32,7 +32,7 @@ data("SolTin_covariates")
 Projection <- CRS("+proj=longlat +ellps=WGS84")
 ```
 
-The projection is standard, and is correct for this data. Next, we have to create a polygon to represent the region we are studying. We could use the maps package to define this, but here the region is defined by the data, so we draw a polygon around that (using functions from the spatstat package), and turn that into a SpatialPolygon.
+The projection is standard, and is correct for this data. Next, we have to create a polygon to represent the region we are studying. We could use the maps package to define this, but here the region is defined by the data, so we draw a polygon around that (using functions from the spatstat package), and turn that into a SpatialPolygon (there is actually a data("SolTin_region"), but this show how to do this if you need it for other data sets).
 
 ```{r MakeRegionPolygon, message=FALSE}
 region.mask=as.owin(cbind(SolTin_covariates[,c("X","Y")], In=rep(TRUE,nrow(SolTin_covariates))),

@@ -18,5 +18,6 @@ Suggests: knitr,
     rmarkdown,
     spatstat,
     mapview,
-    RColorBrewer
+    RColorBrewer,
+    testthat
 VignetteBuilder: knitr
