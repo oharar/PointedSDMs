@@ -14,7 +14,9 @@ Imports: deldir, geosphere, Matrix, parallel, raster, rgeos, splancs
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
-Comemnt: foreign,ggplot2,gpclib,gridExtra,lattice,maptools,maps,MASS,spatstat,
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    spatstat,
+    mapview,
+    RColorBrewer
 VignetteBuilder: knitr

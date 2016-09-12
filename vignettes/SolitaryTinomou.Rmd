@@ -4,22 +4,22 @@ author: "Bob O'Hara"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Solitary Timanou}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ## Introduction
 
-This package is written to provide methods to fit species distribution models to data from a variety of sources. Presence-only data (e.g. species recorded provided by citizen scientists, or from museum collections) is often used in these enterprises, but other types of data are often collected. For example, expert range maps are often made (e.g. see any decent bird guide), and there are often more organised surveys which may provide data on species abseces, or even (if we are lucky) abundance. Ideally we should use all of this data to produce a single distribution model.
+This package is written to provide methods to fit species distribution models to data from a variety of sources. Presence-only data (e.g. species recorded provided by citizen scientists, or from museum collections) is often used in these enterprises, but other types of data are collected too. For example, expert range maps are often made (e.g. see any decent bird guide), and there are often more organised surveys which may provide data on species absences, or even (if we are lucky) abundance. The North American [Breeding Bird Survey](https://www.pwrc.usgs.gov/bbs/) is an exmaple of teh altter, where the data is freely available. Ideally we should use all of this data to produce a single distribution model, but this means we have to model each type of data in its own way.
 
-PointedSDMs does this by creating a model for the species' presence, which is modelled as an intensity (a higher intensity means athe species is more abundant: it takes the view that absence is just a low abundance). This is a continuous surface, so we do not need to worry about the spatial scale (or more accutrately, we only need to worry about how well we are approximating the actual intensity). The observations are modelled as a function of this intensity as well other effects of the observation process. 
+PointedSDMs does this by creating a model for the species' presence, which is modelled as an intensity (a higher intensity means the species is more abundant: it takes the view that absence is just a low abundance). This is a continuous surface, so we do not need to worry about the spatial scale (or more accutrately, we only need to worry about how well we are approximating the actual intensity). The observations are modelled as a function of this intensity as well other effects of the observation process. 
 
-The actual model fitting is done using the [INLA package](http://www.r-inla.org/). This is convenient for the model fitting because it is flexible enough to deal with the different data types, and also much faster than (for example) MCMC. The downside is that the data formatting and syntax can be tricky, so PointedSDMs does as much of this as possible. This vignette demonstrates how to do this, using data for one species, the solitary tinamou (*Tinamus solitarius*).
+The actual model fitting is done using the [INLA package](http://www.r-inla.org/). This is convenient for the model fitting because it is flexible enough to deal with the different data types, and also much faster than MCMC (for example). The downside is that the data formatting and syntax can be tricky, so PointedSDMs does as much of this as possible. This vignette demonstrates how to do this, using data for one species, the solitary tinamou (*Tinamus solitarius*).
 
 ## The Data
 
-PointedSDMs wants data in SpatialData formats, but that is not the way the data is stored. So, we can start with that. We have four sources of data: [eBird](http://ebird.org/content/ebird/), [GBIF](http://www.gbif.org/), a list of presences in national parks, from the parks' species lists, and an expert range map. In addition we have covariate data on a grid.
+PointedSDMs wants data in SpatialData formats, but the example data used here is stored as data frame (which is probably the way a lot of data is stored). So we start by showing how to get the data into hte right format. We have four sources of data: [eBird](http://ebird.org/content/ebird/), [GBIF](http://www.gbif.org/), a list of presences in national parks, from the parks' species lists, and an expert range map. In addition we have covariate data on a grid, and we will also need to create an extra layer, which will approcimate the continuous surface, and onto which we project all of the other data. But first we read in the covariate data ("SolTin_covariates"), which has longitudeand latitude of the centres of pixels and then three covariates: percentage of forest, Net Primary Productivity, and altitude.
 
 ```{r ReadCovData, fig.width=8, message=FALSE}
 
@@ -27,35 +27,42 @@ library(PointedSDMs)
 library(sp)
 library(spatstat)
 library(RColorBrewer)
+library(mapview)
 data("SolTin_covariates")
 Projection <- CRS("+proj=longlat +ellps=WGS84")
+```
 
-# Make a polygon delimiting the region
-region.mask=as.owin(cbind(SolTin_covariates[,c("X","Y")], In=rep(TRUE,nrow(SolTin_covariates))), step=c(0.25, 0.3))
+The projection is standard, and is correct for this data. Next, we have to create a polygon to represent the region we are studying. We could use the maps package to define this, but here the region is defined by the data, so we draw a polygon around that (using functions from the spatstat package), and turn that into a SpatialPolygon.
+
+```{r MakeRegionPolygon, message=FALSE}
+region.mask=as.owin(cbind(SolTin_covariates[,c("X","Y")], In=rep(TRUE,nrow(SolTin_covariates))),
+                    step=c(0.25, 0.3))
 region.mask$m[is.na(region.mask$m)] <- FALSE
 Region.poly=simplify.owin(as.polygonal(region.mask), dmin=0.5)
 PolyPoints=cbind(Region.poly$bdry[[1]]$x[c(1,length(Region.poly$bdry[[1]]$x):1)],
                  Region.poly$bdry[[1]]$y[c(1,length(Region.poly$bdry[[1]]$y):1)])
 Pgon <- Polygons(list(region=Polygon(coords=PolyPoints)), ID="region")
 region.polygon=SpatialPolygons(list(Pgon), proj4string = Projection)
+```
 
-# Add quadratic terms
-# SolTin_covariates$ForestQ <- SolTin_covariates$Forest^2
-# SolTin_covariates$NPPQ <- SolTin_covariates$NPP^2
-# SolTin_covariates$AltitudeQ <- SolTin_covariates$Altitude^2
+Then we out the covariate data into a spatial data frame, and plot tehm
 
+```{r MakeCovariateSpDataFrame, fig.width=8, message=FALSE}
 # Put covariates into a spatial data frame
 Use <- c("Forest","NPP", "Altitude") # , "ForestQ","NPPQ", "AltitudeQ")
 Covariates <- SpatialPointsDataFrame(SolTin_covariates[,c("X","Y")], 
                                    data=SolTin_covariates[,Use], proj4string = Projection)
 Covariates@data <-data.frame(apply(Covariates@data,2, scale))  # scale the covariates
-spplot(Covariates, layout=c(3,1), col.regions=grey(seq(0,1,length=20)), key.space="right")
+# spplot(Covariates, layout=c(3,1), col.regions=grey(seq(0,1,length=20)), key.space="right")
+spplot(Covariates, layout=c(3,1), col.regions=brewer.pal(6, "Blues")[-1], key.space="right")
 
 ```
 
 The darker colour are the lower values, so (for example) the coast and southwest parts of the range are at lower altitude. Expert opinion is that this is a bird of the lowlands (below 500m) and forests.
 
-```{r ReadSpeciesData, message=FALSE, fig.width=6, fig.height=6, cache=TRUE}
+Now we can read in the data other data and convert it into Spatial* objects. THen we can plot it.
+
+```{r ReadSpeciesData, message=FALSE, fig.width=6, fig.height=6}
 data("SolTin_ebird")
 ebird <- SpatialPoints(SolTin_ebird[,c("X","Y")], proj4string = Projection)
 data("SolTin_gbif")
@@ -68,15 +75,16 @@ data("SolTin_range")
 Pgon.range <- Polygons(list(region=Polygon(coords=SolTin_range)), ID="range")
 range.polygon=SpatialPolygons(list(Pgon.range), proj4string = Projection)
 
-MapCols <- c("blue3", "darkgreen", "pink", "red", "grey70")
-names(MapCols) <- c("eBird", "GBIF", "Park, absent", "Park, present", "Expert Range")
+MapCols <- c(brewer.pal(4, "Paired"), grey(c(0.4,0.1)))
+# c("blue3", "darkgreen", "pink", "red", "grey70")
+names(MapCols) <- c("eBird", "GBIF", "Park, absent", "Park, present", "Region", "Expert Range")
 
 par(mar=rep(0,4))
-plot(region.polygon, col="grey90")
+plot(region.polygon, col=MapCols["Region"])
 plot(range.polygon, col=MapCols["Expert Range"], border=NA, add=TRUE)
-points(Parks, cex=0.5, pch=19, col=MapCols[c("Park, absent", "Park, present")][1+Parks@data$Present])
 points(ebird, cex=0.5, pch=19, col=MapCols["eBird"])
 points(gbif, cex=0.5, pch=19, col=MapCols["GBIF"])
+points(Parks, cex=0.7, pch=19, col=MapCols[c("Park, absent", "Park, present")][1+Parks@data$Present])
 
 legend(region.polygon@bbox["x","min"]+0.01*diff(region.polygon@bbox["x",]),
        region.polygon@bbox["y","min"]+0.95*diff(region.polygon@bbox["y",]),
@@ -84,11 +92,13 @@ legend(region.polygon@bbox["x","min"]+0.01*diff(region.polygon@bbox["x",]),
 
 ```
 
+The expert range map does not include eBird and GBIF data from the north-west of the region, and outside of that is too wide. The other po0ints are generally consistent with each other, except that hte species is not listed in several parks in the west where the species is otherwise recorded.
+
 ## Data Preparation
 
-We need to do some preparation before fitting the model. The model works by approximating the continuous space by a tesselation of triangles, so we have to create that tesselation. This means working out where to place the vertices of the triangles: this creates a mesh. The more vertices, the better the approximation (but the longer the calculations take). So, we can use different mesh parameters ("Meshpars") to change this. We can plot the mesh to see if it's OK: it is also better if teh triangles aren't too far away from being equilateral.
+We need to do some preparation before fitting the model. The model works by approximating the continuous space by a tesselation of triangles, so we have to create that tesselation. This means working out where to place the vertices of the triangles: this creates a mesh. The more vertices, the better the approximation (but the longer the calculations take). So, we can use different mesh parameters ("Meshpars") to change this. We can plot the mesh to see if it's OK: it is also better if the triangles aren't too far away from being equilateral.
 
-```{r MakeMesh, message=FALSE, warning=FALSE, fig.width=5, fig.height=5, cache=TRUE}
+```{r MakeMesh, message=FALSE, warning=FALSE, fig.width=5, fig.height=5}
 
   Meshpars <- list(cutoff=0.8, max.edge=c(1, 3), offset=c(1,1))
   Mesh <- MakeSpatialRegion(data=NULL, bdry=region.polygon, meshpars=Meshpars, proj = Projection)
@@ -99,76 +109,90 @@ We need to do some preparation before fitting the model. The model works by appr
   plot(Mesh$mesh)
 ```
 
-Next we can create asome data that we want to predict onto, in order to draw a map of the predicted presence. The resolution of the map is controlled by Nxy (the width and height in pixels). We could, of course, use different data if we wanted to predict a future distribution, of course.
+The blue line is the region: within that we would usually want more points than there are here (the cost of doing this is that the computations take longer). The points outside the region are needed for the modelling, but will be ignored in any results.
 
-```{r MakePred, message=FALSE, cache=TRUE}
+Next we can create asome data that we want to predict onto, in order to draw a map of the predicted presence. The resolution of the map is controlled by Nxy (the width and height in pixels). We could, of course, use different data if we wanted to predict a future distribution, of course. Again, this grid is coarser than we would usually want, to speed up the computation.
+
+```{r MakePred, message=FALSE}
   
 # Create data for projections
-  Nxy.scale <- 0.5 # use this to change the resolution of the predictions
-  Boundary <- Mesh$mesh$loc[Mesh$mesh$segm$int$idx[,2],] # get the boundary of the region
-  Nxy <- round(c(diff(range(Boundary[,1])), diff(range(Boundary[,2])))/Nxy.scale)
-  stk.pred=CreateProjectionGrid(nxy=Nxy, mesh=Mesh$mesh, data=Covariates, 
-                                tag='pred', boundary=Boundary)
-  stk.pred$stk <- AddDistToRangeToStack(in.stk=stk.pred$stk, coords=c("X", "Y"), 
-                                              polynoms = range.polygon, scale=FALSE)
+Nxy.scale <- 0.5 # use this to change the resolution of the predictions
+Boundary <- Mesh$mesh$loc[Mesh$mesh$segm$int$idx[,2],] # get the boundary of the region
+Nxy <- round(c(diff(range(Boundary[,1])), diff(range(Boundary[,2])))/Nxy.scale)
+stk.pred=CreateProjectionGrid(nxy=Nxy, mesh=Mesh$mesh, data=Covariates, 
+                              tag='pred', boundary=Boundary)
+stk.pred$stk <- AddDistToRangeToStack(in.stk=stk.pred$stk, coords=c("X", "Y"), 
+                                      polynoms = range.polygon, scale=FALSE)
 
 ```
 
-Now we can format the presence-only data (i.e. the eBird and GBIF data), and the parks data. This is straightforward with Make*Stack functions:
+Now we can format the presence-only data (i.e. the eBird and GBIF data), and the parks data. This is easy with Make*Stack functions. THe tags are important if we want to extract different parts of the model, e.g. the predictions.
 
-```{r MakeDataStacks, message=FALSE, cache=TRUE}
+```{r MakeDataStacks, message=FALSE}
   
 stk.eBird <- MakePointsStack(presences=ebird, data=Covariates, mesh=Mesh$mesh, 
-                                   polynoms = range.polygon, tag='ebird', InclCoords=TRUE)
+                             polynoms = range.polygon, tag='ebird', InclCoords=TRUE)
 stk.gbif <- MakePointsStack(presences=gbif, data=Covariates, mesh=Mesh$mesh, 
-                                   polynoms = range.polygon, tag='gbif', InclCoords=TRUE)
+                            polynoms = range.polygon, tag='gbif', InclCoords=TRUE)
 stk.parks <- MakeBinomStack(observs=Parks, data=Covariates, mesh=Mesh$mesh, presname='Present', 
-                                   polynoms = range.polygon, tag='parks', InclCoords=TRUE)
+                            polynoms = range.polygon, tag='parks', InclCoords=TRUE)
 
 ```
 
-Now we've done all that, we can fit the model:
+Now we've done all that, we can fit the model. We pass all of the data to the function as stacks, along with the mesh.
 
-```{r FitModel, message=FALSE, cache=TRUE, cache=TRUE}
+```{r FitModel, message=FALSE}
 SolTinModel <- FitModel(stk.eBird, stk.gbif, stk.ip.dists, stk.parks, stk.pred$stk, 
-                      CovNames=NULL, mesh = Mesh$mesh, predictions = TRUE)
-summary(SolTinModel$model)
+                        CovNames=NULL, mesh = Mesh$mesh, predictions = TRUE)
+summary(SolTinModel$model)$fixed
+# summary(SolTinModel$model)$hyperpar
 ```
-Which suggests that the covariates are not good explanatory variables. Unfortunately adding quadratic terms does not help either. We can, though, plot the predictions:
 
-```{r PlotModel, message=FALSE, fig.width=6, fig.height=6, cache=TRUE}
+The summary suggests that the covariates are not good explanatory variables. Unfortunately adding quadratic terms does not help either. We can, though, plot the predictions:
+
+```{r PlotModel, message=FALSE, fig.width=6, fig.height=6}
 
 Pred <- SpatialPixelsDataFrame(points=stk.pred$predcoords, data=SolTinModel$predictions, proj4string=Projection)
-plot(Pred, attr="mean", col=grey(seq(0,1,length=100)))
-# plot(Pred, attr="stddev", col=grey(seq(0.3,0.8,length=100))) # doesn't work
-# points(Parks, cex=0.5, pch=19, col=MapCols[c("Park, absent", "Park, present")][1+Parks@data$Present])
-# points(ebird, cex=0.5, pch=19, col=MapCols["eBird"])
-# points(gbif, cex=0.5, pch=19, col=MapCols["GBIF"])
+Pred@data$precision <- Pred@data$stddev^-2
+
+ncolours <- 200
+greencols.fn <- colorRampPalette(brewer.pal(9, 'Greens'))
+greencols <- greencols.fn(ncolours)
+bluecols.fn <- colorRampPalette(brewer.pal(9, 'Blues'))
+bluecols <- bluecols.fn(ncolours) 
+
+map.mean <- mapview(Pred, zcol = c("mean"), legend = TRUE, # alpha=0.2, 
+                    col.regions=greencols)
+map.stddev <- mapview(Pred, zcol = c("stddev"), legend = TRUE, alpha=0.3, 
+                      col.regions=bluecols)
+sync(map.mean, map.stddev)
+
 
 ```
 
-This suggests that there is a pattern, with tinamou tending to be in the central/eastern region. This part of the model is informed by the spatial surface rther than the covariates, though. So, let's see what happens if we remove the spatial part of the model.
+This suggests that there is a pattern, with tinamou tending to be in the central/eastern region. There is more uncertainty around the edges, so the posterior mean tends to appraoch the overall mean, hence the apparent higher values there. The model is informed more by the spatial surface rather than the covariates, though. So, let's see what happens if we remove the spatial part of the model.
 
-```{r FitModelNoSpat, message=FALSE, cache=TRUE, cache=TRUE}
-
+```{r FitModelNoSpat, message=FALSE}
 SolTinModelNoSpat <- FitModel(stk.eBird, stk.gbif, stk.ip.dists, stk.parks, stk.pred$stk, 
-                      CovNames=NULL, mesh = Mesh$mesh, predictions = TRUE, spat.ind = NULL)
-summary(SolTinModelNoSpat$model)
+                              CovNames=NULL, mesh = Mesh$mesh, predictions = TRUE, spat.ind = NULL)
+summary(SolTinModelNoSpat$model)$fixed
 ```
 
 The environmental covariates still don't seem to do anything, and although the map has variation, it is more variable that the map above, which at least shows clusters.
 
-```{r PlotModelNoSpat, message=FALSE, fig.width=6, fig.height=6, cache=TRUE}
-
+```{r PlotModelNoSpat, message=FALSE, fig.width=6, fig.height=6}
 PredNoSpat <- SpatialPixelsDataFrame(points=stk.pred$predcoords, 
-                                 data=SolTinModelNoSpat$predictions, proj4string=Projection)
-plot(PredNoSpat, attr="mean", col=grey(seq(0,1,length=100)))
-# points(Parks, cex=0.5, pch=19, col=MapCols[c("Park, absent", "Park, present")][1+Parks@data$Present])
-# points(ebird, cex=0.5, pch=19, col=MapCols["eBird"])
-# points(gbif, cex=0.5, pch=19, col=MapCols["GBIF"])
+                                     data=SolTinModelNoSpat$predictions, proj4string=Projection)
+# plot(PredNoSpat, attr="mean", col=grey(seq(0,1,length=100)))
+map.nospat.mean <- mapview(PredNoSpat, zcol = c("mean"), legend = TRUE, # alpha=0.2, 
+                    col.regions=greencols)
+map.nospat.stddev <- mapview(PredNoSpat, zcol = c("stddev"), legend = TRUE, alpha=0.3, 
+                      col.regions=bluecols)
+sync(map.nospat.mean, map.nospat.stddev)
 
-# plot(PredNoSpat, attr="stddev"), col=grey(seq(0.3,0.71,length=100)))
 ```
+
+All of this is a bit disappointing - one would hope an example species would show some response to hte environment. The next step is to look at interactions, which will need some changes to FitModel(), to passbetter specify the model.
 
 
 
