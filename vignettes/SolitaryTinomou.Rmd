@@ -38,9 +38,9 @@ The projection is standard, and is correct for this data. Next, we have to creat
 region.mask=as.owin(cbind(SolTin_covariates[,c("X","Y")], In=rep(TRUE,nrow(SolTin_covariates))),
                     step=c(0.25, 0.3))
 region.mask$m[is.na(region.mask$m)] <- FALSE
-Region.poly=simplify.owin(as.polygonal(region.mask), dmin=0.5)
-PolyPoints=cbind(Region.poly$bdry[[1]]$x[c(1,length(Region.poly$bdry[[1]]$x):1)],
-                 Region.poly$bdry[[1]]$y[c(1,length(Region.poly$bdry[[1]]$y):1)])
+Region.poly <- simplify.owin(as.polygonal(region.mask), dmin=0.5)
+PolyPoints <- cbind(Region.poly$bdry[[1]]$x[c(1,length(Region.poly$bdry[[1]]$x):1)],
+                    Region.poly$bdry[[1]]$y[c(1,length(Region.poly$bdry[[1]]$y):1)])
 Pgon <- Polygons(list(region=Polygon(coords=PolyPoints)), ID="region")
 region.polygon=SpatialPolygons(list(Pgon), proj4string = Projection)
 ```
@@ -119,8 +119,8 @@ Next we can create asome data that we want to predict onto, in order to draw a m
 Nxy.scale <- 0.5 # use this to change the resolution of the predictions
 Boundary <- Mesh$mesh$loc[Mesh$mesh$segm$int$idx[,2],] # get the boundary of the region
 Nxy <- round(c(diff(range(Boundary[,1])), diff(range(Boundary[,2])))/Nxy.scale)
-stk.pred=CreateProjectionGrid(nxy=Nxy, mesh=Mesh$mesh, data=Covariates, 
-                              tag='pred', boundary=Boundary)
+stk.pred <- MakeProjectionGrid(nxy=Nxy, mesh=Mesh$mesh, data=Covariates, 
+                               tag='pred', boundary=Boundary)
 stk.pred$stk <- AddDistToRangeToStack(in.stk=stk.pred$stk, coords=c("X", "Y"), 
                                       polynoms = range.polygon, scale=FALSE)
 

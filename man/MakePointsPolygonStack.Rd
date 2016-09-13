@@ -4,19 +4,20 @@
 \alias{MakePointsPolygonStack}
 \title{Function to create stack for small presence/absence polygons}
 \usage{
-MakePointsPolygonStack(polys, data, coords = c("X", "Y"), mesh, polydatanames,
-  respName = "Present", tol = 0.1, tag = "polygon", InclCoords = FALSE)
+MakePointsPolygonStack(polys, data, coords = c("X", "Y"), mesh,
+  polydatanames = NULL, respName = "Present", tol = 0.1,
+  tag = "polygon", InclCoords = FALSE)
 }
 \arguments{
 \item{polys}{Spatial polygon data frame.}
 
 \item{data}{Data frame with columns for coordinates, and others are covariates.}
 
-\item{coords}{Names for columns with coordinares in data.}
+\item{coords}{Names for columns with coordinates in data.}
 
 \item{mesh}{INLA mesh.}
 
-\item{polydatanames}{Names of covariate data in polygon object.}
+\item{polydatanames}{Names of covariate data in polygon object. Defaults to NULL, which means no covariate data at polygon level.}
 
 \item{respName}{Name for response (e.g. presence/absence). Might be possible to use >1, but haven't tried.}
 
@@ -24,7 +25,7 @@ MakePointsPolygonStack(polys, data, coords = c("X", "Y"), mesh, polydatanames,
 
 \item{tag}{Name for tag for the stack (defaults to "points").}
 
-\item{InclCoords}{Boolean, shoiuld coordinates be included in data (defaults to FALSE).}
+\item{InclCoords}{Boolean, should coordinates be included in data (defaults to FALSE).}
 }
 \value{
 An INLA stack, which will be treated as points in the analysis.

@@ -11,7 +11,7 @@
 #' @export
 #' @import INLA
 
-CreateProjectionGrid  <- function(nxy, mesh, data, tag='pred', coordnames = c("X", "Y"), boundary=NULL) {
+MakeProjectionGrid  <- function(nxy, mesh, data, tag='pred', coordnames = c("X", "Y"), boundary=NULL) {
   if("resp"%in%coordnames) stop("resp cannot be a coordinate name")
   if("e"%in%coordnames) stop("e cannot be a coordinate name")
   if(is.null(boundary)) boundary <- mesh$loc[mesh$segm$int$idx[,2],]

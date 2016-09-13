@@ -48,7 +48,6 @@ Data$IsPark=as.logical(apply(Data[,c("ParkPres","ParkAbs")],1,sum))
 parks.mask=as.owin(cbind(Data[,c("Xorig","Yorig")],In=Data$IsPark), step=c(0.25, 0.3))
 parks.mask$m[is.na(parks.mask$m)] <- FALSE
 parks.poly=simplify.owin(as.polygonal(parks.mask), dmin=0.5)
-plot(parks.poly)
 
 # lapply over parks.poly[[4]] to get mean of covariates in the polygon, plus whether the species was observed in it
 Parks.lst=lapply(parks.poly[[4]], function(poly, data) {
@@ -56,6 +55,14 @@ Parks.lst=lapply(parks.poly[[4]], function(poly, data) {
   c(apply(data[IN,],2,mean), area=poly$area)
   #}, data=Data[,c("X","Y", gsub("RangeF", "range",CovsToUse), "ParkPres")]) # use this line if range should be a factor
 }, data=Data[,c("Xorig","Yorig", CovsToUse, "ParkPres")])
+
+Parks.spat <- sapply(seq_along(parks.poly[[4]]), function(ind, pols) {
+  pol <- pols[[ind]]
+  Polygons(list(Polygon(cbind(pol$x,pol$y))), ID=paste0("Park", ind))
+}, pols=parks.poly[[4]])
+Parks.Data <- data.frame(area=unlist(lapply(parks.poly$bdry, function(poly) poly$area)),
+                   Present=unlist(lapply(Parks.lst, function(x) x["ParkPres"]>0)))
+rownames(Parks.Data) <- paste0("Park", seq_along(Parks.Data$area))
 
 SolTin_parks <- as.data.frame(
   sapply(c("Xorig","Yorig", CovsToUse, "ParkPres","area"), function(wh, lst) {
@@ -86,9 +93,35 @@ use_data(SolTin_ebird, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_gbif, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_parks, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_covariates, overwrite = TRUE) #, pkg=PointedSDMs)
-use_data(SolTin_covariates, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_range, overwrite = TRUE) #, pkg=PointedSDMs)
 use_data(SolTin_polygon, overwrite = TRUE) #, pkg=PointedSDMs)
+
+# Save Spatial objects for tests
+Projection <- CRS("+proj=longlat +ellps=WGS84")
+ebird <- SpatialPoints(SolTin_ebird[,c("X","Y")], proj4string = Projection)
+  save(ebird, file="tests/testthat/ebird.RData")
+gbif <- SpatialPoints(SolTin_gbif[,c("X","Y")], proj4string = Projection)
+  save(gbif, file="tests/testthat/gbif.RData")
+parks <- SpatialPointsDataFrame(SolTin_parks[,c("X","Y")],
+                                data = SolTin_parks[,c("area","Present")],
+                                proj4string = Projection)
+  save(parks, file="tests/testthat/parks.RData")
+parks.polygon <- SpatialPolygons(Srl=Parks.spat, proj4string = Projection)
+parks.polygons <- SpatialPolygonsDataFrame(Sr=parks.polygon, data=Parks.Data)
+  save(parks.polygons, file="tests/testthat/parks_polygons.RData")
+
+covariates <- SpatialPointsDataFrame(SolTin_covariates[,c("X","Y")],
+                                     data=SolTin_covariates[,c("Forest","NPP", "Altitude")],
+                                     proj4string = Projection)
+  save(covariates, file="tests/testthat/covariates.RData")
+pgon.range <- Polygons(list(region=Polygon(coords=SolTin_range)), ID="range")
+range <- SpatialPolygons(list(pgon.range), proj4string = Projection)
+  save(range, file="tests/testthat/range.RData")
+Pgon <- Polygons(list(region=Polygon(coords=SolTin_polygon)), ID="region")
+region <- SpatialPolygons(list(Pgon), proj4string = Projection)
+  save(region, file="tests/testthat/region.RData")
+
+
 
 # Spare code to create test files, before editting them
 # sapply(dir("R")[!grepl("MakeSpatialRegion", dir("R"))], function(filename) {
