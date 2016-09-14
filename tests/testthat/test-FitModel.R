@@ -2,11 +2,11 @@ context("FitModel")
 
 test_that("FitModel works correctly", {
   #  skip_on_cran()
-  load("tests/testthat/ebird.RData")
-  load("tests/testthat/parks.RData")
-  load("tests/testthat/covariates.RData")
-  load("tests/testthat/range.RData")
-  load("tests/testthat/region.RData")
+  load("ebird.RData")
+  load("parks.RData")
+  load("covariates.RData")
+  load("range.RData")
+  load("region.RData")
 
   Meshpars <- list(cutoff=0.8, max.edge=c(1, 3), offset=c(1,1))
   Mesh <- MakeSpatialRegion(data=NULL, bdry=region,

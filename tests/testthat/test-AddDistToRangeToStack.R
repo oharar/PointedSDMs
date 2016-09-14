@@ -2,13 +2,15 @@ context("AddDistToRangeToStack")
 
 test_that("AddDistToRangeToStack works correctly", {
   #  skip_on_cran()
-  load("tests/testthat/region.RData")
+  load("region.RData")
+  load("covariates.RData")
+  load("range.RData")
 
   Meshpars <- list(cutoff=0.8, max.edge=c(1, 3), offset=c(1,1))
 
   Mesh <- MakeSpatialRegion(data=NULL, bdry=region, meshpars=Meshpars,
                             proj = CRS("+proj=longlat +ellps=WGS84"))
-  stk.ip <- MakeIntegrationStack(mesh=Mesh$mesh, data=Covariates, area=Mesh$w,
+  stk.ip <- MakeIntegrationStack(mesh=Mesh$mesh, data=covariates, area=Mesh$w,
                                  tag='ip', InclCoords=TRUE)
   stk.ip.dists <- AddDistToRangeToStack(in.stk=stk.ip, coords=c("X", "Y"),
                                         polynoms = range, scale=FALSE)

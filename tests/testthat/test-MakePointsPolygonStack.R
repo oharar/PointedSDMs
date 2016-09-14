@@ -3,9 +3,9 @@ context("MakePointsPolygonStack")
 test_that("MakePointsPolygonStack works correctly", {
   #  skip_on_cran()
   data("SolTin_covariates")
-  load("tests/testthat/parks_polygons.RData")
-  load("tests/testthat/region.RData")
-#  load("tests/testthat/covariates.RData")
+  load("parks_polygons.RData")
+  load("region.RData")
+#  load("covariates.RData")
 
   Meshpars <- list(cutoff=0.8, max.edge=c(1, 3), offset=c(1,1))
   Mesh <- MakeSpatialRegion(data=NULL, bdry=region,
