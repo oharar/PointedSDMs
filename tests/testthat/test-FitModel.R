@@ -24,10 +24,17 @@ test_that("FitModel works correctly", {
 
   SolTinModel <- FitModel(stk.eBird, stk.ip.dists, stk.parks, CovNames=NULL, mesh = Mesh$mesh, predictions = FALSE)
   Summ <- summary(SolTinModel)$fixed
+# test formula
+  formula2 <- formula(SolTin.form <- resp ~ 0 + Forest + NPP + Altitude + int.ebird + DistToPoly1 +
+    Intercept + X + Y + int.parks)
+  SolTinModel2 <- FitModel(stk.eBird, stk.ip.dists, stk.parks,formula = formula2, spat.ind="i",
+                           CovNames=NULL, mesh = Mesh$mesh, predictions = FALSE)
+  Summ2 <- summary(SolTinModel2)$fixed
 
   expect_is(SolTinModel, "inla")
 # check summary
   expect_equal(nrow(Summ), 9)
   expect_equal(as.vector(Summ[,"mean"]), c(-0.0017, 0.0000, -0.0001, 1.3722, 0.3523, -0.4225, 0.0044, 0.0051, -0.3272),
                tolerance=1e-4)
+  expect_equal(Summ, Summ2)
 })

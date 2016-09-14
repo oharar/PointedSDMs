@@ -54,7 +54,7 @@ Covariates <- SpatialPointsDataFrame(SolTin_covariates[,c("X","Y")],
                                    data=SolTin_covariates[,Use], proj4string = Projection)
 Covariates@data <-data.frame(apply(Covariates@data,2, scale))  # scale the covariates
 # spplot(Covariates, layout=c(3,1), col.regions=grey(seq(0,1,length=20)), key.space="right")
-spplot(Covariates, layout=c(3,1), col.regions=brewer.pal(6, "Blues")[-1], key.space="right")
+spplot(Covariates, layout=c(3,1), col.regions=brewer.pal(6, "Blues")[-1], key.space="right", pretty=TRUE)
 
 ```
 
@@ -145,7 +145,6 @@ Now we've done all that, we can fit the model. We pass all of the data to the fu
 SolTinModel <- FitModel(stk.eBird, stk.gbif, stk.ip.dists, stk.parks, stk.pred$stk, 
                         CovNames=NULL, mesh = Mesh$mesh, predictions = TRUE)
 summary(SolTinModel$model)$fixed
-# summary(SolTinModel$model)$hyperpar
 ```
 
 The summary suggests that the covariates are not good explanatory variables. Unfortunately adding quadratic terms does not help either. We can, though, plot the predictions:
@@ -192,7 +191,14 @@ sync(map.nospat.mean, map.nospat.stddev)
 
 ```
 
-All of this is a bit disappointing - one would hope an example species would show some response to hte environment. The next step is to look at interactions, which will need some changes to FitModel(), to passbetter specify the model.
+All of this is a bit disappointing - one would hope an example species would show some response to the environment. The next step is to look at interactions. We only look at Forest and Altitude, as these are where there is predicted to be an effect on the distbution. But the results still give no evidence for the effects going in any direction.
 
-
+```{r TryQuadraticSurface, message=FALSE}
+Quad.form <- resp ~ 0 + (Forest + Altitude)^2 + I(Forest^2) + I(Altitude^2) + int.ebird + DistToPoly1 + 
+  int.gbif + Intercept + X + Y + int.parks + f(i, model = mesh)
+SolTinModel.quad <- FitModel(stk.eBird, stk.gbif, stk.ip.dists, stk.parks, stk.pred$stk, 
+                        formula=Quad.form, spat.ind = NULL, 
+                        CovNames=NULL, mesh = Mesh$mesh, predictions = TRUE)
+summary(SolTinModel.quad$model)$fixed
+```
 

@@ -4,19 +4,23 @@
 \alias{FitModel}
 \title{Fit a model with INLA}
 \usage{
-FitModel(..., CovNames = NULL, mesh, spat.ind = "i", predictions = FALSE,
-  tag.pred = "pred")
+FitModel(..., formula = NULL, CovNames = NULL, mesh, spat.ind = "i",
+  predictions = FALSE, tag.pred = "pred")
 }
 \arguments{
 \item{...}{Data stacks.}
+
+\item{formula}{If not NULL (the default), the formula to be used in the model fitting.
+Does not have to contain the spatial term if spat.ind is specified.}
 
 \item{CovNames}{Names of covariates to use. If NULL will use all in stack effects.}
 
 \item{mesh}{INLA mesh.}
 
-\item{spat.ind}{Index for spatial mesh. Defaults to i. Set to NULL if no spatial term is wanted}
+\item{spat.ind}{Index for spatial mesh. Defaults to i (which is used elsewhere n this package).
+Set to NULL if no spatial term is wanted.}
 
-\item{predictions}{Boolean: should predictions be made? Defaults to FALSE}
+\item{predictions}{Boolean: should predictions be made? Defaults to FALSE.}
 
 \item{tag.pred}{Name of tag for predictions. Defaults to "pred".}
 }
