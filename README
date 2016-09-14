@@ -2,5 +2,4 @@ This is an R package to fit SDMs in R using a point process formulation. It uses
 
 To Do
 
-- A test suite should be developed for data.
 - Add functionality to FitModel to specify the model formula
