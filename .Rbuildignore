@@ -2,8 +2,5 @@
 ^\.Rproj\.user$
 ^data-raw$
 ^README\.Rmd$
-<<<<<<< HEAD
 ^README\.html$
-=======
->>>>>>> 463f1b733692cecf6ce5d5b57565ff7f4eab848c
 ^README-.*\.png$
