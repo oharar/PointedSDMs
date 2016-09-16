@@ -20,3 +20,4 @@ Usage
 For now check out the vignette:
 
 `R  vignette("SolitaryTinomou")`
+
