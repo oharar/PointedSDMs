@@ -2,7 +2,7 @@ Package: PointedSDMs
 Type: Package
 Title: Fit Models derived from Point Processes to Species Distributions using
     INLA
-Version: 0.1
+Version: 0.2.0.9001
 Date: 2016-08-01
 Author: Bob O'Hara
 Maintainer: Bob O'Hara <bohara@senckenberg.de>
