@@ -21,7 +21,7 @@ At the moment this package is not public, so you will either have a zip file, wh
 
 ```R
  devtools::install_github("oharar/PointedSDMs")
- ````
+ ```
  
 should work.
  

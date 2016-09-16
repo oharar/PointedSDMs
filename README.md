@@ -10,14 +10,13 @@ Installation
 
 At the moment this package is not public, so you will either have a zip file, which you can use with install.packages(), or you will have access to hte GitHub repository, so
 
-`R devtools::install\_github("oharar/PointedSDMs")`
+`R  devtools::install_github("oharar/PointedSDMs")`
 
 should work.
 
 Usage
 -----
 
-For now check out the vignette:
+Check out the vignette:
 
 `R  vignette("SolitaryTinomou")`
-
