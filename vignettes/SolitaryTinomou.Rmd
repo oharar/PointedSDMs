@@ -11,15 +11,15 @@ vignette: >
 
 ## Introduction
 
-This package is written to provide methods to fit species distribution models to data from a variety of sources. Presence-only data (e.g. species recorded provided by citizen scientists, or from museum collections) is often used in these enterprises, but other types of data are collected too. For example, expert range maps are often made (e.g. see any decent bird guide), and there are often more organised surveys which may provide data on species absences, or even (if we are lucky) abundance. The North American [Breeding Bird Survey](https://www.pwrc.usgs.gov/bbs/) is an exmaple of teh altter, where the data is freely available. Ideally we should use all of this data to produce a single distribution model, but this means we have to model each type of data in its own way.
+This package is written to provide methods to fit species distribution models to data from a variety of sources. Presence-only data (e.g. species recorded provided by citizen scientists, or from museum collections) is often used in these enterprises, but other types of data are collected too. For example, expert range maps are often made (e.g. see any decent bird guide), and there are often more organised surveys which may provide data on species absences, or even (if we are lucky) abundance. The North American [Breeding Bird Survey](https://www.pwrc.usgs.gov/bbs/) is an example of the latter, where the data is freely available. Ideally we should use all of this data to produce a single distribution model, but this means we have to model each type of data in its own way.
 
-PointedSDMs does this by creating a model for the species' presence, which is modelled as an intensity (a higher intensity means the species is more abundant: it takes the view that absence is just a low abundance). This is a continuous surface, so we do not need to worry about the spatial scale (or more accutrately, we only need to worry about how well we are approximating the actual intensity). The observations are modelled as a function of this intensity as well other effects of the observation process. 
+`PointedSDMs` does this by creating a model for the species' presence, which is modelled as an intensity (a higher intensity means the species is more abundant: it takes the view that absence is just a low abundance). This is a continuous surface, so we do not need to worry about the spatial scale (or more accutrately, we only need to worry about how well we are approximating the actual intensity). The observations are modelled as a function of this intensity as well other effects of the observation process. 
 
-The actual model fitting is done using the [INLA package](http://www.r-inla.org/). This is convenient for the model fitting because it is flexible enough to deal with the different data types, and also much faster than MCMC (for example). The downside is that the data formatting and syntax can be tricky, so PointedSDMs does as much of this as possible. This vignette demonstrates how to do this, using data for one species, the solitary tinamou (*Tinamus solitarius*).
+The actual model fitting is done using the [INLA package](http://www.r-inla.org/). This is convenient for the model fitting because it is flexible enough to deal with the different data types, and also much faster than MCMC (for example). The downside is that the data formatting and syntax can be tricky, so `PointedSDMs` does as much of this as possible. This vignette demonstrates how to do this, using data for one species, the solitary tinamou (*Tinamus solitarius*).
 
 ## The Data
 
-PointedSDMs wants data in SpatialData formats, but the example data used here is stored as data frame (which is probably the way a lot of data is stored). So we start by showing how to get the data into hte right format. We have four sources of data: [eBird](http://ebird.org/content/ebird/), [GBIF](http://www.gbif.org/), a list of presences in national parks, from the parks' species lists, and an expert range map. In addition we have covariate data on a grid, and we will also need to create an extra layer, which will approcimate the continuous surface, and onto which we project all of the other data. But first we read in the covariate data ("SolTin_covariates"), which has longitudeand latitude of the centres of pixels and then three covariates: percentage of forest, Net Primary Productivity, and altitude.
+`PointedSDMs` wants data in `SpatialData` formats, but the example data used here is stored as data frame (which is probably the way a lot of data is stored). So we start by showing how to get the data into the right format. We have four sources of data: [eBird](http://ebird.org/content/ebird/), [GBIF](http://www.gbif.org/), a list of presences in national parks, from the parks' species lists, and an expert range map. In addition we have covariate data on a grid, and we will also need to create an extra layer, which will approximate the continuous surface, and onto which we project all of the other data. But first we read in the covariate data ("SolTin_covariates"), which has longitudeand latitude of the centres of pixels and then three covariates: percentage of forest, Net Primary Productivity, and altitude.
 
 ```{r ReadCovData, fig.width=8, message=FALSE}
 
@@ -100,18 +100,19 @@ We need to do some preparation before fitting the model. The model works by appr
 
 ```{r MakeMesh, message=FALSE, warning=FALSE, fig.width=5, fig.height=5}
 
-  Meshpars <- list(cutoff=0.8, max.edge=c(1, 3), offset=c(1,1))
-  Mesh <- MakeSpatialRegion(data=NULL, bdry=region.polygon, meshpars=Meshpars, proj = Projection)
-  stk.ip <- MakeIntegrationStack(mesh=Mesh$mesh, data=Covariates, area=Mesh$w, 
-                                 tag='ip', InclCoords=TRUE)
-    stk.ip.dists <- AddDistToRangeToStack(in.stk=stk.ip, coords=c("X", "Y"), 
-                                          polynoms = range.polygon, scale=FALSE)
-  plot(Mesh$mesh)
+Meshpars <- list(cutoff=0.8, max.edge=c(1, 3), offset=c(1,1))
+Mesh <- MakeSpatialRegion(data=NULL, bdry=region.polygon, meshpars=Meshpars,
+                          proj = Projection)
+stk.ip <- MakeIntegrationStack(mesh=Mesh$mesh, data=Covariates, area=Mesh$w, 
+                               tag='ip', InclCoords=TRUE)
+stk.ip.dists <- AddDistToRangeToStack(in.stk=stk.ip, coords=c("X", "Y"), 
+                                      polynoms = range.polygon, scale=FALSE)
+plot(Mesh$mesh)
 ```
 
 The blue line is the region: within that we would usually want more points than there are here (the cost of doing this is that the computations take longer). The points outside the region are needed for the modelling, but will be ignored in any results.
 
-Next we can create asome data that we want to predict onto, in order to draw a map of the predicted presence. The resolution of the map is controlled by Nxy (the width and height in pixels). We could, of course, use different data if we wanted to predict a future distribution, of course. Again, this grid is coarser than we would usually want, to speed up the computation.
+Next we can create some data that we want to predict onto, in order to draw a map of the predicted presence. The resolution of the map is controlled by Nxy (the width and height in pixels). We could, of course, use different data if we wanted to predict a future distribution, of course. Again, this grid is coarser than we would usually want, to speed up the computation.
 
 ```{r MakePred, message=FALSE}
   
@@ -123,27 +124,28 @@ stk.pred <- MakeProjectionGrid(nxy=Nxy, mesh=Mesh$mesh, data=Covariates,
                                tag='pred', boundary=Boundary)
 stk.pred$stk <- AddDistToRangeToStack(in.stk=stk.pred$stk, coords=c("X", "Y"), 
                                       polynoms = range.polygon, scale=FALSE)
-
 ```
 
-Now we can format the presence-only data (i.e. the eBird and GBIF data), and the parks data. This is easy with Make*Stack functions. THe tags are important if we want to extract different parts of the model, e.g. the predictions.
+Now we can format the presence-only data (i.e. the eBird and GBIF data), and the parks data. This is easy with Make*Stack functions. The tags are important if we want to extract different parts of the model, e.g. the predictions.
 
 ```{r MakeDataStacks, message=FALSE}
-  
 stk.eBird <- MakePointsStack(presences=ebird, data=Covariates, mesh=Mesh$mesh, 
-                             polynoms = range.polygon, tag='ebird', InclCoords=TRUE)
+                             polynoms = range.polygon, tag='ebird',
+                             InclCoords=TRUE)
 stk.gbif <- MakePointsStack(presences=gbif, data=Covariates, mesh=Mesh$mesh, 
-                            polynoms = range.polygon, tag='gbif', InclCoords=TRUE)
-stk.parks <- MakeBinomStack(observs=Parks, data=Covariates, mesh=Mesh$mesh, presname='Present', 
-                            polynoms = range.polygon, tag='parks', InclCoords=TRUE)
-
+                            polynoms = range.polygon, tag='gbif',
+                            InclCoords=TRUE)
+stk.parks <- MakeBinomStack(observs=Parks, data=Covariates, mesh=Mesh$mesh,
+                            presname='Present', polynoms = range.polygon,
+                            tag='parks', InclCoords=TRUE)
 ```
 
 Now we've done all that, we can fit the model. We pass all of the data to the function as stacks, along with the mesh.
 
 ```{r FitModel, message=FALSE}
-SolTinModel <- FitModel(stk.eBird, stk.gbif, stk.ip.dists, stk.parks, stk.pred$stk, 
-                        CovNames=NULL, mesh = Mesh$mesh, predictions = TRUE)
+SolTinModel <- FitModel(stk.eBird, stk.gbif, stk.ip.dists, stk.parks,
+                        stk.pred$stk, CovNames=NULL, mesh = Mesh$mesh,
+                        predictions = TRUE)
 summary(SolTinModel$model)$fixed
 ```
 
