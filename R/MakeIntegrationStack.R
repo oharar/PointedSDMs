@@ -10,7 +10,8 @@
 #'
 #' @export
 #' @import INLA
-MakeIntegrationStack=function(mesh, data, area, tag='mesh', coordnames=c("X","Y"), InclCoords=FALSE) {
+MakeIntegrationStack <- function(mesh, data, area, tag='mesh',
+                                 coordnames=c("X","Y"), InclCoords=FALSE) {
   if(class(data)!="SpatialPointsDataFrame" & !all(coordnames%in%names(data))) stop("Coordinates not in the data")
 
   if(class(data)=="SpatialPointsDataFrame") {
@@ -32,7 +33,8 @@ MakeIntegrationStack=function(mesh, data, area, tag='mesh', coordnames=c("X","Y"
   # Projector matrix for integration points.
   projmat.ip <- Matrix::Diagonal(mesh$n, rep(1, mesh$n))  # from mesh to integration points
 
-  stk.ip <- inla.stack(data=list(resp=cbind(rep(0,mesh$n), NA), e=area), A=list(1,projmat.ip), tag=tag,
+  stk.ip <- inla.stack(data=list(resp=cbind(rep(0,mesh$n), NA), e=area),
+                       A=list(1,projmat.ip), tag=tag,
                        effects=list(NearestCovs@data, list(i=1:mesh$n)))
-  stk.ip
+  return(stk.ip)
 }

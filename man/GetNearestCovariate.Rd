@@ -13,6 +13,7 @@ GetNearestCovariate(points, covs)
 }
 \value{
 A SpatialPointsDataFrame with the original points plus the data from the closest point.
+
 If there are ties, this will use the first element.
 }
 \description{

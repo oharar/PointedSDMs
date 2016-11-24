@@ -3,17 +3,21 @@
 #' @param data Data (as data frame, with points having locations, or as a SpatialPointsDataFrame). Can be NULL, if bdry is not NULL.
 #' @param coords Names of columns for coordinates (X & Y) in data. Ignored if data is NULL.
 #' @param meshpars List of parameters to be sent to inla.mesh.2d().
-#' @param bdry Polygon of boundary for region, of class Polygon. If NULL, draws a boundary around the points.
+#' @param bdry Polygon of boundary for region, of class Polygon. If \code{NULL}, draws a boundary around the points.
 #' @param proj Projection to use if data is not a projection. Defaults to utm (hopefully).
 #' @return A list with 3 elements:
 #'     . mesh: mesh (from inla.mesh.2d)
 #'     . spde: spde object for Matern model (from inla.spde2.matern)
 #'     . w: weights for each point in mesh
 #'
+# DLM notes, need to cleanup and include
+# @section Mesh parameters:
+# The \code{meshpars} argument allows us to set options for mesh creation. Changing these options can have a big impact on the results of the fitted model. \code{cutoff} sets how faithfully the boundary is approximated (setting to 0 gives exactly the boundary supplied). \code{max.edge} is the maximum triangle edge (side) length inside and (optionally) outside the boundary, these are specified in the units of the coordinate system. \code{cutoff} avoids the many triangles being build around locations (this also acts to simplify the boundary), higher values lead to a simpler mesh (which is generated faster).
+#
 #' @export
 #' @import sp
 #' @import INLA
-MakeSpatialRegion=function(data=NULL, coords=c("X","Y"), meshpars, bdry=NULL, proj = CRS("+proj=utm")) {
+MakeSpatialRegion <- function(data=NULL, coords=c("X","Y"), meshpars, bdry=NULL, proj = CRS("+proj=utm")) {
   # data=Data; coords=c("Xorig", "Yorig"); meshpars=list(cutoff=0.5, max.edge=c(1, 3), offset=c(1,1))
   if(is.null(bdry) & is.null(data)) stop("Either data or a boundary has to be supplied")
   if(is.null(bdry)) {

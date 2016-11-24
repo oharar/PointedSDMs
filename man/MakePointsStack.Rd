@@ -8,24 +8,23 @@ MakePointsStack(data, presences, tag = "points", intercept = TRUE, mesh,
   coordnames = NULL, InclCoords = FALSE, polynoms = NULL, scale = FALSE)
 }
 \arguments{
-\item{data}{SpatialPointsDataFrame of covariates.}
+\item{data}{\code{SpatialPointsDataFrame} of covariates.}
 
-\item{presences}{SpatialPoints object of presences.}
+\item{presences}{\code{SpatialPoints} object of presences.}
 
-\item{tag}{Name for tag for the stack (defaults to "points").}
+\item{tag}{Name for this stack (defaults to "points").}
 
-\item{intercept}{Boolean, should an intercept be added? Defaults to TRUE.}
+\item{intercept}{should an intercept be added? Defaults to \code{TRUE}.}
 
 \item{mesh}{INLA mesh.}
 
-\item{coordnames}{Names of coorninates.}
+\item{coordnames}{Names of coordinates.}
 
-\item{InclCoords}{Boolean, shoiuld coordinates be included in data (defaults to FALSE).}
+\item{InclCoords}{should coordinates be included in data? (defaults to \code{FALSE})}
 
-\item{polynoms}{If not NULL, a SpatialPolygons object, with (for example) range maps.}
+\item{polynoms}{If not \code{NULL}, a \code{SpatialPolygons} object, with (for example) range maps.}
 
-\item{scale}{Should the distance be scaled by dividing by the mean of the non-zero distances?
-Defaults to FALSE, either logical or numeric. Ignored if polynoms is NULL.}
+\item{scale}{Should the distance be scaled by dividing by the mean of the non-zero distances? Defaults to \code{FALSE}, either logical or numeric. Ignored if \code{polynoms} is \code{NULL}.}
 }
 \value{
 An INLA stack with points

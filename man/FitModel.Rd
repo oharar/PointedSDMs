@@ -10,22 +10,22 @@ FitModel(..., formula = NULL, CovNames = NULL, mesh, spat.ind = "i",
 \arguments{
 \item{...}{Data stacks.}
 
-\item{formula}{If not NULL (the default), the formula to be used in the model fitting.
-Does not have to contain the spatial term if spat.ind is specified.}
+\item{formula}{If not \code{NULL} (the default), the formula to be used in the model fitting.
+Does not have to contain the spatial term if \code{spat.ind} is specified.}
 
-\item{CovNames}{Names of covariates to use. If NULL will use all in stack effects.}
+\item{CovNames}{Names of covariates to use. If \code{NULL} will use all in stack effects.}
 
 \item{mesh}{INLA mesh.}
 
-\item{spat.ind}{Index for spatial mesh. Defaults to i (which is used elsewhere n this package).
-Set to NULL if no spatial term is wanted.}
+\item{spat.ind}{Index for spatial mesh. Defaults to \code{i} (which is used elsewhere n this package).
+Set to \code{NULL} if no spatial term is wanted.}
 
-\item{predictions}{Boolean: should predictions be made? Defaults to FALSE.}
+\item{predictions}{Boolean: should predictions be made? Defaults to \code{FALSE}.}
 
 \item{tag.pred}{Name of tag for predictions. Defaults to "pred".}
 }
 \value{
-If predictions is TRUE, a list with
+If predictions is \code{TRUE}, a list with
     - model: an object of class INLA, with the results of the analysis in them.
     . predictions: Posterior means and standard deviationsfor linear predictor for predictions. Note that
     If predictions is FALSE, just the model.

@@ -1,23 +1,22 @@
 #' Function to create stack for presence only points
 #'
-#' @param data SpatialPointsDataFrame of covariates.
-#' @param presences SpatialPoints object of presences.
-#' @param tag Name for tag for the stack (defaults to "points").
-#' @param intercept Boolean, should an intercept be added? Defaults to TRUE.
+#' @param data \code{SpatialPointsDataFrame} of covariates.
+#' @param presences \code{SpatialPoints} object of presences.
+#' @param tag Name for this stack (defaults to "points").
+#' @param intercept should an intercept be added? Defaults to \code{TRUE}.
 #' @param mesh INLA mesh.
-#' @param coordnames Names of coorninates.
-#' @param InclCoords Boolean, shoiuld coordinates be included in data (defaults to FALSE).
-#' @param polynoms If not NULL, a SpatialPolygons object, with (for example) range maps.
-#' @param scale Should the distance be scaled by dividing by the mean of the non-zero distances?
-#' Defaults to FALSE, either logical or numeric. Ignored if polynoms is NULL.
+#' @param coordnames Names of coordinates.
+#' @param InclCoords should coordinates be included in data? (defaults to \code{FALSE})
+#' @param polynoms If not \code{NULL}, a \code{SpatialPolygons} object, with (for example) range maps.
+#' @param scale Should the distance be scaled by dividing by the mean of the non-zero distances? Defaults to \code{FALSE}, either logical or numeric. Ignored if \code{polynoms} is \code{NULL}.
 #'
 #' @return An INLA stack with points
 #'
 #' @export
 #' @import INLA
-
-MakePointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
-                         coordnames=NULL, InclCoords=FALSE, polynoms = NULL, scale = FALSE) {
+MakePointsStack <- function(data, presences, tag="points", intercept=TRUE, mesh,
+                         coordnames=NULL, InclCoords=FALSE, polynoms = NULL,
+                         scale = FALSE) {
   if(is.null(coordnames)) coordnames <- colnames(data@coords)
   if(!is.null(polynoms)) {
     if(class(polynoms) != "SpatialPolygonsDataFrame" & class(polynoms) != "SpatialPolygons")
@@ -35,7 +34,9 @@ MakePointsStack=function(data, presences, tag="points", intercept=TRUE, mesh,
   projmat <- inla.spde.make.A(mesh, as.matrix(NearestCovs@coords)) # from mesh to point observations
 
   stk.pp <- inla.stack(data=list(resp=cbind(rep(1,nrow(NearestCovs)), NA),
-                                 e=rep(0, nrow(NearestCovs))), A=list(1,projmat), tag=tag,
+                                 e=rep(0, nrow(NearestCovs))),
+                       A=list(1,projmat), tag=tag,
                        effects=list(NearestCovs@data, list(i=1:mesh$n)))
-  stk.pp
+
+  return(stk.pp)
 }

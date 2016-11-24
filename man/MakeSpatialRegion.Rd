@@ -14,7 +14,7 @@ MakeSpatialRegion(data = NULL, coords = c("X", "Y"), meshpars,
 
 \item{meshpars}{List of parameters to be sent to inla.mesh.2d().}
 
-\item{bdry}{Polygon of boundary for region, of class Polygon. If NULL, draws a boundary around the points.}
+\item{bdry}{Polygon of boundary for region, of class Polygon. If \code{NULL}, draws a boundary around the points.}
 
 \item{proj}{Projection to use if data is not a projection. Defaults to utm (hopefully).}
 }
