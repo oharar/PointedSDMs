@@ -45,7 +45,7 @@ Pgon <- Polygons(list(region=Polygon(coords=PolyPoints)), ID="region")
 region.polygon=SpatialPolygons(list(Pgon), proj4string = Projection)
 ```
 
-Then we out the covariate data into a spatial data frame, and plot tehm
+Then we out the covariate data into a spatial data frame, and plot them
 
 ```{r MakeCovariateSpDataFrame, fig.width=8, message=FALSE}
 # Put covariates into a spatial data frame
@@ -60,7 +60,7 @@ spplot(Covariates, layout=c(3,1), col.regions=brewer.pal(6, "Blues")[-1], key.sp
 
 The darker colour are the lower values, so (for example) the coast and southwest parts of the range are at lower altitude. Expert opinion is that this is a bird of the lowlands (below 500m) and forests.
 
-Now we can read in the data other data and convert it into Spatial* objects. THen we can plot it.
+Now we can read in the data other data and convert it into Spatial* objects. THhn we can plot it.
 
 ```{r ReadSpeciesData, message=FALSE, fig.width=6, fig.height=6}
 data("SolTin_ebird")

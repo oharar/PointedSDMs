@@ -53,7 +53,7 @@ FitModel <- function(..., formula=NULL, CovNames=NULL, mesh, spat.ind = "i", pre
               data=inla.stack.data(stck), verbose=FALSE,
               control.results=list(return.marginals.random=FALSE,
                                    return.marginals.predictor=FALSE),
-              control.predictor=list(A=inla.stack.A(stck), compute=TRUE),
+              control.predictor=list(A=inla.stack.A(stck), link=1, compute=TRUE),
               Ntrials=inla.stack.data(stck)$Ntrials, E=inla.stack.data(stck)$e)
 
   if(predictions) {

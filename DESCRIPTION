@@ -10,7 +10,7 @@ Description: A package to fit models based on point processes to a variety of da
 Depends: R (>= 2.10),
     INLA,
     sp,
-Imports: deldir, geosphere, Matrix, raster, rgeos, splancs
+Imports: deldir, geosphere, Matrix, raster, rgeos, splancs, methods
 License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
