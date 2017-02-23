@@ -19,4 +19,3 @@ If there are ties, this will use the first element.
 \description{
 Function to get covariate values nearest the data/integration point
 }
-

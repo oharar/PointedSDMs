@@ -32,4 +32,3 @@ An INLA stack with points
 \description{
 Function to create stack for presence only points
 }
-

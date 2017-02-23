@@ -26,4 +26,3 @@ An INLA stack for integration
 \description{
 Function to create stack for integration points
 }
-

@@ -22,4 +22,3 @@ SolTin_parks
 Recorded Observations of the Solitary Tinomou, from parks
 }
 \keyword{datasets}
-

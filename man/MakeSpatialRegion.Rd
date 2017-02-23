@@ -27,4 +27,3 @@ A list with 3 elements:
 \description{
 Function to set up spatial structure for region
 }
-

@@ -12,6 +12,3 @@ export(MakeProjectionGrid)
 export(MakeSpatialRegion)
 import(INLA)
 import(sp)
-
-importFrom("methods", "as")
-importFrom("stats", "update")

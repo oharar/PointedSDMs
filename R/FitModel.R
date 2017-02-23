@@ -9,14 +9,18 @@
 #' Set to \code{NULL} if no spatial term is wanted.
 #' @param predictions Boolean: should predictions be made? Defaults to \code{FALSE}.
 #' @param tag.pred Name of tag for predictions. Defaults to "pred".
+#' @param waic Should wAIC be calculated? Defaults to \code{FALSE}.
+#' @param dic Should DIC be calculated? Defaults to \code{FALSE}.
 #' @return If predictions is \code{TRUE}, a list with
 #'     - model: an object of class INLA, with the results of the analysis in them.
 #'     . predictions: Posterior means and standard deviationsfor linear predictor for predictions. Note that
 #'     If predictions is FALSE, just the model.
 #'
 #' @export
+#' @import stats
 #' @import INLA
-FitModel <- function(..., formula=NULL, CovNames=NULL, mesh, spat.ind = "i", predictions=FALSE, tag.pred="pred") {
+FitModel <- function(..., formula=NULL, CovNames=NULL, mesh, spat.ind = "i", predictions=FALSE, tag.pred="pred",
+                     waic=FALSE, dic=FALSE) {
 
   stck <- inla.stack(...)
 
@@ -54,7 +58,8 @@ FitModel <- function(..., formula=NULL, CovNames=NULL, mesh, spat.ind = "i", pre
               control.results=list(return.marginals.random=FALSE,
                                    return.marginals.predictor=FALSE),
               control.predictor=list(A=inla.stack.A(stck), link=1, compute=TRUE),
-              Ntrials=inla.stack.data(stck)$Ntrials, E=inla.stack.data(stck)$e)
+              Ntrials=inla.stack.data(stck)$Ntrials, E=inla.stack.data(stck)$e,
+              control.compute=list(waic=waic, dic=dic))
 
   if(predictions) {
     id <- inla.stack.index(stck,tag.pred)$data

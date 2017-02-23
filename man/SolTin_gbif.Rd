@@ -19,4 +19,3 @@ SolTin_gbif
 Recorded Observations of the Solitary Tinomou, from GBIF
 }
 \keyword{datasets}
-

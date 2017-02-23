@@ -13,7 +13,7 @@ Depends: R (>= 2.10),
 Imports: deldir, geosphere, Matrix, raster, rgeos, splancs, methods
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown,
     spatstat,

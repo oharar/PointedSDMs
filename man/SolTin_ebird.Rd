@@ -19,4 +19,3 @@ SolTin_ebird
 Recorded Observations of the Solitary Tinomou, from eBird
 }
 \keyword{datasets}
-

@@ -20,4 +20,3 @@ SolTin_covariates
 Covariate information for teh region around therange of the solitary tinomou
 }
 \keyword{datasets}
-

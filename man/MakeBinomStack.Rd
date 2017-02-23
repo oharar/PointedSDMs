@@ -40,4 +40,3 @@ An INLA stack with binomial data: include Ntrials, which is the number of trials
 \description{
 Function to create stack for presence only points
 }
-

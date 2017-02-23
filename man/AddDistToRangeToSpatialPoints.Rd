@@ -19,4 +19,3 @@ A spatial points data frame with distances to the polygon added.
 \description{
 Function to add distance to a polygon to a spatial points object
 }
-

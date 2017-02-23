@@ -15,6 +15,7 @@
 # The \code{meshpars} argument allows us to set options for mesh creation. Changing these options can have a big impact on the results of the fitted model. \code{cutoff} sets how faithfully the boundary is approximated (setting to 0 gives exactly the boundary supplied). \code{max.edge} is the maximum triangle edge (side) length inside and (optionally) outside the boundary, these are specified in the units of the coordinate system. \code{cutoff} avoids the many triangles being build around locations (this also acts to simplify the boundary), higher values lead to a simpler mesh (which is generated faster).
 #
 #' @export
+#' @import methods
 #' @import sp
 #' @import INLA
 MakeSpatialRegion <- function(data=NULL, coords=c("X","Y"), meshpars, bdry=NULL, proj = CRS("+proj=utm")) {

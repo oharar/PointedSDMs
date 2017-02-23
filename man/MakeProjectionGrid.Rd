@@ -26,4 +26,3 @@ An INLA stack onto which new data can be projected
 \description{
 Function to create stack for predictions
 }
-

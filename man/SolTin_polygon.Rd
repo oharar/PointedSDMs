@@ -17,4 +17,3 @@ SolTin_polygon
 Points of polygon for region of study for solitary timanou
 }
 \keyword{datasets}
-

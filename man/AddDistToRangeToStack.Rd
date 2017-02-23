@@ -21,4 +21,3 @@ An INLA stack, with the distance to the polygon added
 \description{
 Function to add distance to a list of polygons (e.g. range map) to a stack
 }
-

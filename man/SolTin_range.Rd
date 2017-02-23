@@ -17,4 +17,3 @@ SolTin_range
 Points of polygon for solitary timanou range map
 }
 \keyword{datasets}
-

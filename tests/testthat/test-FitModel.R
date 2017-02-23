@@ -22,7 +22,8 @@ test_that("FitModel works correctly", {
                               polynoms = range, tag='parks', InclCoords=TRUE)
 
 
-  SolTinModel <- FitModel(stk.eBird, stk.ip.dists, stk.parks, CovNames=NULL, mesh = Mesh$mesh, predictions = FALSE)
+  SolTinModel <- FitModel(stk.eBird, stk.ip.dists, stk.parks, CovNames=NULL, mesh = Mesh$mesh, predictions = FALSE,
+                          waic=TRUE, dic=TRUE)
   Summ <- summary(SolTinModel)$fixed
 # test formula
   formula2 <- formula(SolTin.form <- resp ~ 0 + Forest + NPP + Altitude + int.ebird + DistToPoly1 +
@@ -37,4 +38,8 @@ test_that("FitModel works correctly", {
   expect_equal(as.vector(Summ[,"mean"]), c(-0.0017, 0, -1e-04, 1.3867, 0.319, -0.3539, 0.0043, 0.0064, -0.294),
                tolerance=1e-4)
   expect_equal(Summ, Summ2, tolerance=1e-4)
+# Test that wAIC and DIC are calculated
+  expect_equal(SolTinModel$waic$waic, -599.96, tolerance=1e-2)
+  expect_equal(SolTinModel$dic$dic, -602.78, tolerance=1e-2)
+
 })

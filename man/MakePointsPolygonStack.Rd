@@ -33,4 +33,3 @@ An INLA stack, which will be treated as points in the analysis.
 \description{
 Function to create stack for small presence/absence polygons
 }
-
