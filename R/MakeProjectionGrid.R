@@ -5,13 +5,14 @@
 #' @param tag Name for tag for the stack (defaults to "points").
 #' @param coordnames Names of coorinates (defaults to X and Y)
 #' @param boundary Boundary of region to project onto. Defaults to NULL, when the boundary of the mesh will be used. Either of class SpatialPolygons or two columns with the coorinates of the polygon
+#' @param intercept Logical: should an intercept be added? Defaults to TRUE
 #'
 #' @return An INLA stack onto which new data can be projected
 #'
 #' @export
 #' @import INLA
 
-MakeProjectionGrid  <- function(nxy, mesh, data, tag='pred', coordnames = c("X", "Y"), boundary=NULL) {
+MakeProjectionGrid  <- function(nxy, mesh, data, tag='pred', coordnames = c("X", "Y"), boundary=NULL, intercept=TRUE) {
   if("resp"%in%coordnames) stop("resp cannot be a coordinate name")
   if("e"%in%coordnames) stop("e cannot be a coordinate name")
   if(is.null(boundary)) boundary <- mesh$loc[mesh$segm$int$idx[,2],]
@@ -33,7 +34,7 @@ MakeProjectionGrid  <- function(nxy, mesh, data, tag='pred', coordnames = c("X",
 
   # Extract covariates for points, add intercept and coordinates
   NearestCovs=GetNearestCovariate(points=predcoords, covs=data)
-  NearestCovs$Intercept=1
+  if(intercept) NearestCovs$Intercept=1
   NearestCovs@data[,colnames(NearestCovs@coords)] <- NearestCovs@coords
 
   # stack the predicted data
