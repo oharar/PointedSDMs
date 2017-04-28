@@ -22,8 +22,8 @@ test_that("FitModel works correctly", {
                               polynoms = range, tag='parks', InclCoords=TRUE)
 
 
-  SolTinModel <- FitModel(stk.eBird, stk.ip.dists, stk.parks, CovNames=NULL, mesh = Mesh$mesh, predictions = FALSE,
-                          waic=TRUE, dic=TRUE)
+  SolTinModel <- FitModel(stk.eBird, stk.ip.dists, stk.parks, CovNames=NULL, mesh = Mesh$mesh,
+                          predictions = FALSE, waic=TRUE, dic=TRUE)
   Summ <- summary(SolTinModel)$fixed
 # test formula
   formula2 <- formula(SolTin.form <- resp ~ 0 + Forest + NPP + Altitude + int.ebird + DistToPoly1 +
@@ -32,6 +32,12 @@ test_that("FitModel works correctly", {
                            CovNames=NULL, mesh = Mesh$mesh, predictions = FALSE)
   Summ2 <- summary(SolTinModel2)$fixed
 
+# Test priors
+  SolTinModel3 <- FitModel(stk.eBird, stk.ip.dists, stk.parks, CovNames=NULL, mesh = Mesh$mesh,
+                          predictions = FALSE, waic=TRUE, dic=TRUE, control.fixed = list(mean=0, prec=100))
+  Summ3 <- summary(SolTinModel3)$fixed
+
+  Diff <- abs(Summ[grep("int", rownames(Summ)),"mean"]) - abs(Summ3[grep("int", rownames(Summ3)),"mean"])
   expect_is(SolTinModel, "inla")
 # check summary
   expect_equal(nrow(Summ), 9)
@@ -41,5 +47,10 @@ test_that("FitModel works correctly", {
 # Test that wAIC and DIC are calculated
   expect_equal(SolTinModel$waic$waic, -599.96, tolerance=1e-2)
   expect_equal(SolTinModel$dic$dic, -602.78, tolerance=1e-2)
+
+# Test that priors work and give smaller intercepts
+  expect_is(SolTinModel3, "inla")
+  expect_lt(Summ3["int.ebird","mean"], Summ["int.ebird","mean"])
+  expect_gt(Summ3["int.parks","mean"], Summ["int.parks","mean"])
 
 })

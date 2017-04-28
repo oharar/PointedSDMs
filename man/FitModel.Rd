@@ -5,7 +5,8 @@
 \title{Fit a model with INLA}
 \usage{
 FitModel(..., formula = NULL, CovNames = NULL, mesh, spat.ind = "i",
-  predictions = FALSE, tag.pred = "pred", waic = FALSE, dic = FALSE)
+  predictions = FALSE, tag.pred = "pred", control.fixed = NULL,
+  waic = FALSE, dic = FALSE)
 }
 \arguments{
 \item{...}{Data stacks.}
@@ -23,6 +24,8 @@ Set to \code{NULL} if no spatial term is wanted.}
 \item{predictions}{Boolean: should predictions be made? Defaults to \code{FALSE}.}
 
 \item{tag.pred}{Name of tag for predictions. Defaults to "pred".}
+
+\item{control.fixed}{List of arguments to be passed to INLA via control.fixed (e.g. parameters of priors of fixed effects). Default is \code{NULL}.}
 
 \item{waic}{Should wAIC be calculated? Defaults to \code{FALSE}.}
 
