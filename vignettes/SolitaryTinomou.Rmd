@@ -114,7 +114,7 @@ The blue line is the region: within that we would usually want more points than 
 
 Next we can create some data that we want to predict onto, in order to draw a map of the predicted presence. The resolution of the map is controlled by Nxy (the width and height in pixels). We could, of course, use different data if we wanted to predict a future distribution, of course. Again, this grid is coarser than we would usually want, to speed up the computation.
 
-```{r MakePred, message=FALSE}
+```{r MakePred, message=TRUE}
   
 # Create data for projections
 Nxy.scale <- 0.5 # use this to change the resolution of the predictions

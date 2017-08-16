@@ -7,7 +7,7 @@
 #' @param mesh INLA mesh.
 #' @param spat.ind Index for spatial mesh. Defaults to \code{i} (which is used elsewhere n this package).
 #' Set to \code{NULL} if no spatial term is wanted.
-#' @param predictions Boolean: should predictions be made? Defaults to \code{FALSE}.
+#' @param predictions Boolean: should predictions (on the linear scale) be made? Defaults to \code{FALSE}.
 #' @param tag.pred Name of tag for predictions. Defaults to "pred".
 #' @param control.fixed List of arguments to be passed to INLA via control.fixed (e.g. parameters of priors of fixed effects). Default is \code{NULL}.
 #' @param waic Should wAIC be calculated? Defaults to \code{FALSE}.
@@ -62,7 +62,7 @@ FitModel <- function(..., formula=NULL, CovNames=NULL, mesh, spat.ind = "i", pre
               data=inla.stack.data(stck), verbose=FALSE,
               control.results=list(return.marginals.random=FALSE,
                                    return.marginals.predictor=FALSE),
-              control.predictor=list(A=inla.stack.A(stck), link=1, compute=TRUE),
+              control.predictor=list(A=inla.stack.A(stck), link=NULL, compute=TRUE),
               control.fixed=control.fixed,
               Ntrials=inla.stack.data(stck)$Ntrials, E=inla.stack.data(stck)$e,
               control.compute=list(waic=waic, dic=dic))

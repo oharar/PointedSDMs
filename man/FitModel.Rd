@@ -21,7 +21,7 @@ Does not have to contain the spatial term if \code{spat.ind} is specified.}
 \item{spat.ind}{Index for spatial mesh. Defaults to \code{i} (which is used elsewhere n this package).
 Set to \code{NULL} if no spatial term is wanted.}
 
-\item{predictions}{Boolean: should predictions be made? Defaults to \code{FALSE}.}
+\item{predictions}{Boolean: should predictions (on the linear scale) be made? Defaults to \code{FALSE}.}
 
 \item{tag.pred}{Name of tag for predictions. Defaults to "pred".}
 

@@ -15,7 +15,7 @@ AddDistToRangeToStack <- function(in.stk, coords, polynoms, scale=FALSE) {
   if(!all(coords%in%names(in.stk$effects$ncol))) stop("Coordinates not in effects")
 
   # calculate distances
-  UsePts <- !is.na(in.stk$effects$data[,coords[1]])
+  UsePts <- apply(!is.na(in.stk$effects$data[,coords]), 1, all)
   Locations <- SpatialPoints(in.stk$effects$data[UsePts,coords], proj4string = CRS(proj4string(polynoms)))
 
   Dists <- AddDistToRangeToSpatialPoints(data = Locations, polynoms = polynoms, scale=scale)
