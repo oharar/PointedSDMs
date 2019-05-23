@@ -27,7 +27,7 @@ library(PointedSDMs)
 library(sp)
 library(spatstat)
 library(RColorBrewer)
-library(mapview)
+# library(mapview)
 data("SolTin_covariates")
 Projection <- CRS("+proj=longlat +ellps=WGS84")
 ```
@@ -60,7 +60,7 @@ spplot(Covariates, layout=c(3,1), col.regions=brewer.pal(6, "Blues")[-1], key.sp
 
 The darker colour are the lower values, so (for example) the coast and southwest parts of the range are at lower altitude. Expert opinion is that this is a bird of the lowlands (below 500m) and forests.
 
-Now we can read in the data other data and convert it into Spatial* objects. THhn we can plot it.
+Now we can read in the data other data and convert it into Spatial* objects. Then we can plot it.
 
 ```{r ReadSpeciesData, message=FALSE, fig.width=6, fig.height=6}
 data("SolTin_ebird")
