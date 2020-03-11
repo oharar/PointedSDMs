@@ -26,7 +26,7 @@ MakeBinomStack=function(data, observs, tag="points", intercept=TRUE, mesh, presn
   if(length(presname)>1) stop("more than one name given for presences column")
   if(length(trialname)>1) stop("more than one name given for number of trials column")
   if(!presname%in%names(observs@data)) stop(paste(presname," not in names of presences data frame", sep=""))
-  if(!is.logical(observs@data[,presname]) & !trialname%in%names(observs@data))
+  if(!is.logical(observs@data[[presname]]) & !trialname%in%names(observs@data))
     stop(paste(trialname," not in names of presences data frame", sep=""))
 
   if(is.null(coordnames)) coordnames <- colnames(data@coords)
@@ -36,21 +36,21 @@ MakeBinomStack=function(data, observs, tag="points", intercept=TRUE, mesh, presn
   }
 
   NearestCovs <- GetNearestCovariate(points=observs, covs=data)
-  if(InclCoords) {    data@data[,coordnames] <- data@coords  }
-  if(intercept) NearestCovs@data[,paste("int",tag,sep=".")] <- 1 # add intercept
+  if(InclCoords) {    data@data[[coordnames]] <- data@coords  }
+  if(intercept) NearestCovs@data[[paste("int",tag,sep=".")]] <- 1 # add intercept
   if(!is.null(polynoms)) {
     NearestCovs <- AddDistToRangeToSpatialPoints(data = NearestCovs, polynoms = polynoms, scale=scale)
   }
 
 # If presences are Boolean, reformat
-  if(is.logical(observs@data[,presname])) {
-    observs@data[,presname] <- as.integer(observs@data[,presname])
-    observs@data[,trialname] <- rep(1, nrow(observs@data))
+  if(is.logical(observs@data[[presname]])) {
+    observs@data[[presname]] <- as.integer(observs@data[[presname]])
+    observs@data[[trialname]] <- rep(1, nrow(observs@data))
   }
   # Projector matrix from mesh to data.
   projmat <- inla.spde.make.A(mesh, as.matrix(NearestCovs@coords)) # from mesh to point observations
 
-  stk.binom <- inla.stack(data=list(resp=cbind(NA,observs@data[,presname] ), Ntrials=observs@data[,trialname]), A=list(1,projmat), tag=tag,
+  stk.binom <- inla.stack(data=list(resp=cbind(NA,observs@data[[presname]] ), Ntrials=observs@data[[trialname]]), A=list(1,projmat), tag=tag,
                           effects=list(NearestCovs@data, list(i=1:mesh$n)))
 
   stk.binom
