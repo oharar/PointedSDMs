@@ -52,6 +52,7 @@ FitModel <- function(..., formula=NULL, CovNames=NULL, mesh, spat.ind = "i", pre
     } else {
       if(any(grepl(paste0('(', spat.ind, ','), formula, fixed=TRUE))) {
         warning(paste0(spat.ind, " already in formula, so will be ignored"))
+        Formula <- formula
       } else {
         Formula <- update(formula, paste0(" ~ . + f(", spat.ind, ", model=mesh)"))    }
       }
