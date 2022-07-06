@@ -5,6 +5,8 @@ PointedSDMs
 
 This is an R package to fit SDMs in R using a point process formulation. It uses INLA to do the fitting, so a lot of the functions are written to re-format Spatial data so tha INLA can use it.
 
+This is now defunct: go to [Philip Mostert's repo](https://github.com/PhilipMostert/PointedSDMs) for the updated version.
+
 Installation
 ------------
 
